@@ -1,0 +1,12 @@
+Guttman scaling
+1) Trading : ports, trading emphoria, markets
+2) agriculture : irrigation systems, food storage sites, canals
+3) Social Stratification : Settlement hierarchy
+4) gov.t specialists : religious levels, military levels, professional priesthood, judges, professional lawyers, administrative levels, specialized government buildings, professional soldiers, full-time bureaucrats, 
+5) craft specialists : occupational complexity
+6) pop size > 10000 : polity population
+7) cap size > 1000 : population of the largest settlement, population of the largest settlement_1
+8) writing : practical literature, scientific literature, formal legal code, articles, religious writing, sacred texts, history, written records_1, non-phonetic writing, fiction, phonetic alphabetic writing, written records, non-phonetic writing, non-phonetic alphabetic writing, script
+
+polities considering : 
+
