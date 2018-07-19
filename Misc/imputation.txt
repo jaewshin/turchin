@@ -1,0 +1,29 @@
+Problems with Turchin's imputation
+1) Using regression to fill up missing values. This could introduce huge bias into the dataset, namely linearity, which could completely jeopardize the use of PCA 
+--> we could potentially check this by running simulations on randomly generated i.i.d dataset by following the same method that Turchin used?
+
+2) If we don't have information about writing, then we mark it as absent and give a score of 0. 
+--> There is a significant difference between marking something as absent and not having information about it 
+
+3) Multiple imputation was applied only to the predictor variables (polpop, polterr, cappop, hier, gov, infra, and money) (excluding dependent variable (info) which was not imputed). If this means as I think it is, then Turchin aggregated all the variables together first and then performed imputation on it. As was discovered earlier, each polity might have different number of variables. By ignoring all the details, we are not even sure how much information is lost in the process. 
+
+Proper procedure for multiple imputation
+1) impute the data multiple times
+2) run analysis on each of the imputed dataset
+3) average all the imputed dataset and run analysis on the averaged data 
+4) calculate the standard errors by averaging the squared standard errors of the missing value estimates 
+
+According to PNAS paper, 3700 of the total of 21000 were missing data points 
+--> does each polity have the same number of variables? 
+
+Turchin's imputation procedure:
+1) Suppose we have a missing value for variable A and coded values for variables B-H
+2) Select a subset of cases from the full dataset (in which all values of A-H variables are presen)
+3) Build a regression model for A
+4) * Using the model, estimate parameters
+5) instead of simply substituing the missing value with the expected one, sample from the posterior distribution characterizing the prediction of the regression model
+
+Among 9 CCs, Info, which takes in the sophistication of the writing system and the absence or presence of texts, is not affected by imputation beause we have no missing values. However, for writing, which is one basis of info, if there is no evidence of writing then 0 was put in. 
+
+Multiple imputation was applied only to the predictor variables (polpop, polterr, cappop, hier, gov, infra, and Money) The response variable (info) was not imputed 
+

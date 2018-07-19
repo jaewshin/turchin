@@ -1,0 +1,164 @@
+nga, polity, time
+Ghanaian Coast, GhAshnE, 1501, 1701
+Ghanaian Coast, GhAshnL, 1702, 1895
+Niger Inland Delta, MlJeJe1, -250, 49
+Niger Inland Delta, MlJeJe2, 50, 399
+Niger Inland Delta, MlJeJe3, 400, 899
+Niger Inland Delta, MlJeJe4, 900, 999
+Niger Inland Delta, MrWagdM, 1000, 1077
+Niger Inland Delta, MrWagdL, 1100, 1202 
+Niger Inland Delta, MlMali*, 1235, 1410
+Niger Inland Delta, MlSong2, 1493, 1590
+Niger Inland Delta, MaSaadi, 1591, 1618
+Niger Inland Delta, MlSegou, 1640, 1711
+Niger Inland Delta, MlBaman, 1712, 1818
+Upper Egypt, EgBadar, -4400, -3801 
+Upper Egypt, EgNaqa1, -3800, -3551
+Upper Egypt, EgNaqa2, -3550, -3301
+Upper Egypt, EgNaqa3, -3300, -3101
+Upper Egypt, EgDyn1, -3100, -2901
+Upper Egypt, EgDyn2, -2900, -2651
+Upper Egypt, EgOldK1, -2650, -2351
+Upper Egypt, EgOldK2, -2350, -2151
+Upper Egypt, EgRegns, -2150, -2017
+Upper Egypt, EgMidKg, -2016, -1721
+Upper Egypt, EgThebH, -1720, -1567
+Upper Egypt, EgNKThu, -1550, -1294
+Upper Egypt, EgNKRam, -1293, -1071 
+Upper Egypt, EgThebL, -1070, -761
+Upper Egypt, SdKusht, -760, -656
+Upper Egypt, EgSaite, -655, -526
+Upper Egypt, IrAchae, -525, -405
+Upper Egypt, EgIntOc, -404, -343
+Upper Egypt, EgPtol1, -305, -218
+Upper Egypt, EgPtol2, -217, -32
+Upper Egypt, ItRomPr, -31, 283
+Upper Egypt, TrRomDm, 284, 394
+Upper Egypt, TrERom, 395, 632
+Upper Egypt, SyCalUm, 661, 749
+Upper Egypt, IqAbbs1, 750, 867
+Upper Egypt, EgTulIk, 868, 969 
+Upper Egypt, TnFatim, 970, 1170
+Upper Egypt, EgAyyub, 1171, 1259
+Upper Egypt, EgMamBh, 1260, 1347
+Upper Egypt, EgMamCP, 1348, 1411
+Upper Egypt, EgMamBu, 1412, 1516
+Upper Egypt, TrOttm3, 1517, 1682
+Upper Egypt, TrOttm4, 1683, 1798
+Iceland, IsCommw, 930, 1262
+Iceland, NorKing, 1263, 1380
+Paris Basin, FrBeakr, -3200, -2201
+Paris Basin, FrAtlBA, -2200, -1001
+Paris Basin, FrHallA, -1000, -901
+Paris Basin, FrHallB, -900, -701
+Paris Basin, FrHallC, -700, -601
+Paris Basin, FrHallD, -600, -475
+Paris Basin, FrTeneA, -474, -325
+Paris Basin, FrTeneB, -324, -175
+Paris Basin, FrTeneC, -174, -27
+Paris Basin, ItRomPr, -31, 283
+Paris Basin, TrRomDm, 284, 473
+Paris Basin, FrMervE, 481, 542
+Paris Basin, FrMervM, 543, 686
+Paris Basin, FrMervL, 687, 750
+Paris Basin, FrCarlE, 752, 839
+Paris Basin, FrCarlL, 840, 986
+Paris Basin, FrCaptE, 987, 1149
+Paris Basin, FrCaptL, 1150, 1327
+Paris Basin, FrValoE, 1328, 1449
+Paris Basin, FrValoL, 1450, 1588
+Paris Basin, FrBurbE, 1589, 1659
+Paris Basin, FrBurbL, 1660, 1788
+Latium, ItLatCA, -3600, -1801
+Latium, ItLatBA, -1800, -1001
+Latium, ItLatIA, -1000, -717
+Latium, ItRomRg, -716, -610
+Latium, ItRomER, -509, -265
+Latium, ItRomMR, -264. -134
+Latium, ItRomLR, -133, -29
+Latium, ItRomPr, -31, 283
+Latium, TrRomDm, 284, 394
+Latium, ItRomWe, 395, 457
+Latium, ItOstrg, 493, 554
+Latium, ItRav, 568, 710
+Latium, ItStPet, 711, 903
+Latium, ItPapEM, 904, 1197
+Latium, ItPapHM, 1198, 1308
+Latium, ItPapRn, 1378, 1526
+Latium, ItPapM1, 1527, 1647
+Latium, ItPapM2, 1648, 1800
+Lena River Valley, RuYakuE, 1400, 1642
+Lena River Valley, RuYakuL, 1643, 1900
+Orkhon Valley, MnXngnE, -1400, -300
+Orkhon Valley, MnXngnM, -209, -60
+Orkhon Valley, MnXngnL, -59, 99
+Orkhon Valley, MnXianb, 100, 250
+Orkhon Valley, MnRourn, 300, 551
+Orkhon Valley, MnETurk, 583, 630
+Orkhon Valley, MnTurk2, 684, 744
+Orkhon Valley, MnUigur, 745, 840
+Orkhon Valley, MnShiwe, 841, 907
+Orkhon Valley, MnKhit2, 960, 1125
+Orkhon Valley, MnMongE, 1126, 1205
+Orkhon Valley, MnMngKh, 1206, 1367
+Orkhon Valley, MnMongL, 1368, 1689
+Orkhon Valley, MnZungh, 1695, 1745
+Orkhon Valley, CnQingL, 1796, 1912
+Sogdiana, TjSaraz, -3500, -2001
+Sogdiana, KzAndro, -2000, -1401
+Sogdiana, UzKok01, -1400, -1000
+Sogdiana, UzKhw01, -999, -751
+Sogdiana, UzKok02, -750, -600
+Sogdiana, IrAchae, -520, -330
+Sogdiana, IrSeleu, -300, -249
+Sogdiana, AfGrBct, -248, -130
+Sogdiana, AfTochr, -129, 29
+Sogdiana, AfKushn, 30, 230
+Sogdiana, IrSasn1, 231, 387
+Sogdiana, AfKidar, 388, 425
+Sogdiana, AfHepht, 426, 563
+Sogdiana, KgWTurk, 564, 603
+Sogdiana, UzSogdi, 604, 711
+Sogdiana, IqAbbs1, 750, 875
+Sogdiana, UzSamnd, 876, 990
+Sogdiana, KgKarKh, 991, 1089
+Sogdiana, IrSeljq, 1090, 1157
+Sogdiana, KgKarKh, 1158, 1212
+Sogdiana, UzChagt, 1263, 1361
+Sogdiana, UzTimur, 1370, 1526
+Sogdiana, UzJanid, 1599, 1747
+Yemeni Coastal Plain, YeQasmi, 1637, 1805
+Yemeni Coastal Plain, TrOttm5, 1873, 1919 
+Konya Plain, TrNeoER, -9600, -7001 
+Konya Plain, TrNeoCR, -7000, -6601
+Konya Plain, TrNeoLT, -6600, -6001
+Konya Plain, TrClcER, -6000, -5501 
+Konya Plain, TrClcLT, -5000, -3001
+Konya Plain, TrBrzER, -3000, -2001
+Konya Plain, TrBrzMD, -2000, -1701
+Konya Plain, TrHatOK, -1650, -1501
+Konya Plain, TrBrzL2, -1500, -1400
+Konya Plain, TrHatNK, -1344, -1181
+Konya Plain, TrNHitt, -1180, -901
+Konya Plain, TrTabal, -900, -837
+Konya Plain, TrPhryg, -836, -696
+Konya Plain, TrLydia, -670, -547
+Konya Plain, IrAchae, -546, -334
+Konya Plain, TrLysim, -300, -282
+Konya Plain, IrSeleu, -281, -190
+Konya Plain, TrCappL, -129, -95
+Konya Plain, ItRomPr, -31, 283
+Konya Plain, TrRomDm, 284, 394
+Konya Plain, TrERom, 395, 607
+Konya Plain, TrByzM1, 632, 866
+Konya Plain, TrByzM2, 867, 1072
+Konya Plain, TrRum, 1093, 1243
+Konya Plain, IrIlkhn, 1263, 1326
+Konya Plain, TrOttm1, 1393, 1402
+Konya Plain, TrOttm2, 1421, 1516
+Konya Plain, TrOttm3, 1517, 1682
+Konya Plain, TrOttm4, 1683, 1838
+Konya Plain, TrOttm5, 1839, 1922
+Garo Hills, InGaroE, 1775, 1867 
+Garo Hills, InGaroL, 1868, 1956 
+
