@@ -14,24 +14,6 @@ import progressbar as pb
 import time 
 from scipy.sparse import csgraph
 
-# read csv/excel data files 
-pnas_data1 = pd.read_csv('/home/jaeweon/research/data/pnas_data1.csv')
-pnas_data2 = pd.read_csv('/home/jaeweon/research/data/pnas_data2.csv')
-raw = pd.read_excel('/home/jaeweon/research/data/raw.xlsx', encoding = 'ISO-8859-1')
-raw_corrected = pd.read_csv('/home/jaeweon/research/data/seshat_corrected.csv', encoding = 'ISO-8859-1')
-
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-
-# format data 
-
-# extract 9 Complexity Characteristic variables 
-features = ['PolPop', 'PolTerr', 'CapPop', 'levels', 'government','infrastr', 'writing', 'texts', 'money']
-
-# take subset of original data table with 9 CCs and change it into numpy array 
-data_mat = pnas_data1.loc[:, features].values
-scaled = StandardScaler().fit_transform(data_mat)
-
 # class for progressbar
 class progress_timer:
 
@@ -69,12 +51,8 @@ def svd(data):
     
     return P, D, Q
 
-# SVD on the original data matrix. 
-filtered_pnas1 = StandardScaler().fit_transform(pnas_data1.loc[:, features].values)
-
-P, D, Q = svd(filtered_pnas1)
-reconstruct = np.matmul(np.matmul(P, np.diag(D)), Q)
-print(np.std(filtered_pnas1), np.std(reconstruct), np.std(filtered_pnas1-reconstruct)) # check if the reconstructed matrix is valid 
-
-
-
+def is_pos_def(x):
+    """
+    Check if the matrix is positive semidefinite 
+    """
+    return np.all(np.linalg.eigvals(x) > 0)
