@@ -161,4 +161,174 @@ Konya Plain, TrOttm4, 1683, 1838
 Konya Plain, TrOttm5, 1839, 1922
 Garo Hills, InGaroE, 1775, 1867 
 Garo Hills, InGaroL, 1868, 1956 
-
+Susiana, IrPrCer, -7800, -7201
+Susiana, IrForma, -7200, -7001
+Susiana, IrArcha, -7000, -6001
+Susiana, IrKhzE*, -6000, -5701
+Susiana, IrKhzEM, -5700, -5101
+Susiana, IrKhzM*, -5100, -4701
+Susiana, IrKhzL*, -4700, -4301
+Susiana, IrSusa1, -4300, -3801
+Susiana, IrSusa2, -3800, -3101
+Susiana, IrSusa3, -3100, -2676
+Susiana, IrAwanE, -2675, -2251
+Susiana, IqAkkad, -2250, -2154
+Susiana, IqUrIII, -2112, -2004
+Susiana, IrShima, -2028, -1901
+Susiana, IrSukkE, -1900, -1701
+Susiana, IrSukkL, -1700, -1501
+Susiana, IrMElm1, -1500, -1401
+Susiana, IrMElm2, -1400, -1201
+Susiana, IrMElm3, -1200, -1101 
+Susiana, IrElmCP, -1100, -901
+Susiana, IrNElm1, -900, -744
+Susiana, IrNElm2, -743, -647
+Susiana, IrNElm3, -612, -540 
+Susiana, IrAchae, -539, -331
+Susiana, IrSeleu, -312, -144
+Susiana, IrPart1, -143, 24
+Susiana, IrElym2, 25, 215
+Susiana, IrSasn1, 220, 498
+Susiana, IrSasn2, 499, 642
+Susiana, SyCalUm, 663, 749
+Susiana, IqAbbs1, 750, 946
+Susiana, IrBuyid, 947, 1055
+Susiana, IrSeljq, 1056, 1190
+Susiana, IqAbbs2, 1191, 1207
+Susiana, IrIlkhn, 1263, 1335
+Susiana, UzTimur, 1394, 1470
+Susiana, IrAkKoy, 1471, 1504
+Susiana, IrSafvd, 1505, 1722
+Susiana, IrQajar, 1794, 1925
+Deccan, InDecNL, -2700, -1201
+Deccan, InDecIA, -1200, -301
+Deccan, InMaury, -300, -206
+Deccan, InDecKg, -205, -101 
+Deccan, InSataL, -100, 203
+Deccan, InVakat, 286, 335
+Deccan, InKadam, 451, 540
+Deccan, InChaBd, 541, 756
+Deccan, ChaBd, 757, 973
+Deccan, InRasht, 974, 1055
+Deccan, InChaKl, 1192, 1253
+Deccan, InHoysa, 1280, 1310
+Deccan, InVijay, 1336, 1646
+Deccan, InMugl*, 1687, 1720
+Kachi Plain, PkAcerN, -7500, -5501
+Kachi Plain, PkCeraN, -5500, -4001
+Kachi Plain, PkChalc, -4000, -3201
+Kachi Plain, PkPreUr, -3200, -2501
+Kachi Plain, PkUrbn1, -2500, -2101 
+Kachi Plain, PkUrbn2, -2100, -1801
+Kachi Plain, PkPostU, -1800, -1301
+Kachi Plain, PkProto, -1300, -551
+Kachi Plain, IrAchae, -550, -329 
+Kachi Plain, InMaury, -303, -194
+Kachi Plain, PkIndGr, -145, -96
+Kachi Plain, IrPart1, -95, 21 
+Kachi Plain, AfKushn, 30, 250
+Kachi Plain, IrSasn1, 251, 495
+Kachi Plain, AfHepht, 496, 531 
+Kachi Plain, IrSasn2, 532, 641
+Kachi Plain, SyCalUm, 670, 750 
+Kachi Plain, IqAbbs1, 751, 861 
+Kachi Plain, PkSind1, 862, 1192 
+Kachi Plain, AfGhurd, 1193, 1206
+Kachi Plain, InDelh*, 1207, 1339
+Kachi Plain, PkSind2, 1340, 1519
+Kachi Plain, InMugl*, 1526, 1740
+Kachi Plain, AfDurrn, 1748, 1826
+Kapuasi Basin, IdBrokE, 1650, 1841
+Kapuasi Basin, IdBrokL, 1842, 1987
+Central Java, IdCJBun, -400, 499
+Central Java, IdKalin, 500, 731
+Central Java, IdMedng, 732, 1019
+Central Java, IdKedir, 1049, 1222
+Central Java, IdMajap, 1291, 1518
+Central Java, IdMatrm, 1568, 1703 
+Cambodian Basin, KhFunaE, 225, 539
+Cambodian Basin, KhFunaL, 540, 639
+Cambodian Basin, KhChenl, 640, 801
+Cambodian Basin, KhAngkE, 802, 1079
+Cambodian Basin, KhAngkC, 1080, 1219
+Cambodian Basin, KhAngkL, 1220, 1431
+Cambodian Basin, KhCambd, 1432, 1593
+Cambodian Basin, ThAyuth, 1594, 1767
+Cambodian Basin, ThRattn, 1782, 1873
+Southern China Hills, CnHQngL, 1701, 1895
+Southern China Hills, CnHChin, 1896, 1941
+Kansai, JpYayoi, -300, 249
+Kansai, JpKofun, 250, 537
+Kansai, JpAsuka, 538, 710
+Kansai, JpHeian, 794, 1184
+Kansai, JpKamak, 1185, 1333
+Kansai, JpAshik, 1336, 1466 
+Kansai, JpSengk, 1467, 1567
+Kansai, JpAzMom, 1568, 1602
+Kansai, JpTokgw, 1603, 1868
+Middle Yellow River Valley, CnYngsh, -5000, -3001
+Middle Yellow River Valley, CnLngsh, -3000, -1900 
+Middle Yellow River Valley, CnErlit, -1850, -1651
+Middle Yellow River Valley, CnErlig, -1650, -1251
+Middle Yellow River Valley, CnShang, -1250, -1123
+Middle Yellow River Valley, CnWZhou, -1122, -795
+Middle Yellow River Valley, CnJinSA, -794, -489
+Middle Yellow River Valley, CnWeiWS, -488, -223
+Middle Yellow River Valley, cnimqin, -225, -207
+Middle Yellow River Valley, CnWHan*, -202, 9
+Middle Yellow River Valley, CnEHan*, 25, 219
+Middle Yellow River Valley, CnErJin, 265, 317
+Middle Yellow River Valley, CnNWei*, 386, 557
+Middle Yellow River Valley, CnSui**, 581, 617
+Middle Yellow River Valley, CnTangE, 618, 762
+Middle Yellow River Valley, CnTangL, 763, 907
+Middle Yellow River Valley, CnNSong, 960, 1126
+Middle Yellow River Valley, CnLrJin, 1127, 1234
+Middle Yellow River Valley, CnYuan*, 1271, 1367
+Middle Yellow River Valley, CnMing*, 1368, 1643
+Middle Yellow River Valley, CnQingE, 1644, 1795
+Middle Yellow River Valley, CnQingL, 1796, 1912
+Finger Lakes, UsIroqE, 1566, 1713
+Finger Lakes, UsIroqL, 1714, 1848
+Cahokia, USMisEW, -600, -151
+Cahokia, USMisMW, -150, 299
+Cahokia, USMisRo, 300, 449
+Cahokia, USMisMu, 450, 599
+Cahokia, USMisPa, 600, 749
+Cahokia, USMisSp, 750, 899
+Cahokia, USMisME, 900, 1049
+Cahokia, USCahoE, 1050, 1199
+Cahokia, USCahoL, 1200, 1274
+Cahokia, USMisSd, 1275, 1399
+Cahokia, USOneot, 1400, 1639
+Cahokia, USIllin, 1640, 1832 
+Valley of Oaxaca, MxTieLa, -1400, -1151
+Valley of Oaxaca, MxSanGu, -1150, -701
+Valley of Oaxaca, MxRosar, -700, -501
+Valley of Oaxaca, MxAlb1E, -500, -301
+Valley of Oaxaca, MxAlb1L, -300, -101
+Valley of Oaxaca, MxAlb2, -100, 199
+Valley of Oaxaca, MxAlb3A, 200, 499
+Valley of Oaxaca, MxAlb3B, 500, 899
+Valley of Oaxaca, MxAlbEP, 900, 1100
+Valley of Oaxaca, MxAlbLP, 1100, 1520 
+Lowland Andes, EcJivaE, 1534, 1830
+Lowland Andes, EcJivaL, 1831, 1931
+North Colombia, CoNahua, 250, 1049
+North Colombia, CoTairo, 1050, 1524
+Cuzco, PeCuzLF, 1, 199
+Cuzco, PeCuzE1, 200, 499
+Cuzco, PeCuzE2, 500, 649
+Cuzco, PeWari, 650, 999
+Cuzco, PeCuzL1, 1000, 1249
+Cuzco, PeCuzL2, 1250, 1399
+Cuzco, PeInca*, 1400, 1532
+Oro PNG, PgOrokE, 1734, 1883 
+Oro PNG, PgOrokL, 1884, 1942
+Chuuk Islands, FmTrukE, 1775, 1885
+Chuuk Islands, FmTrukL, 1886, 1948 
+Big Island Hawaii, Hawaii1, 800, 1199
+Big Island Hawaii, Hawaii2, 1200, 1649
+Big Island Hawaii, Hawaii3, 1650, 1777
+Big Island Hawaii, USKameh, 1778, 1819
+Big Island Hawaii, USHawai, 1820, 1854
