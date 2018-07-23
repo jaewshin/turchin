@@ -1,0 +1,11 @@
+.DS_Store
+*~
+.#*
+.*.sw?
+*.ZILESAVE
+*.p
+*.pdf
+*.old
+*.txt
+
+/__pycache__/*
