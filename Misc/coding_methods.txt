@@ -1,0 +1,81 @@
+10 World Regions, 3 NGAs within each region
+
+Types of NGA per region:
+1) earliest developments of a centralized, stratified society
+2) free of centralized societies until the colonial period (ideally)
+3) intermediate between above two types of NGA
+
+*At each time period, NGA is occupied by a single entity, at least in this coding practice. Should the NGA be divided up among a multitude of small-scale polities, Turchin used the concept of "quasi-polity", which is defined as a geographic area with some degree of cultural homogeneity 
+
+222 rows out of 456 in the data table have no missing values 
+
+If a polity, if none of the CCs changed during certain period, then data is interpolated. 
+e.g. Latium-Iron Age starts at 1000 BCE and ends at 717 BCE, but since none of the CCS changed during this iperiod, the data file has a single row for this polity. The interpolated data file devotes three rows to the polity, where each row is identical except for time 
+
+1) sort eigenvalues based on their respective proportion
+2) sort eigenvectors based on how eigenvalues are sorted
+
+[ -4.82329577e-01  -1.86034233e-01   3.29100797e-01   4.68120924e-01
+   6.34697361e-01  -4.40335275e-02  -7.49690085e-03   2.16538614e-02
+  -3.52416413e-04] 
+
+[-0.5177052  -0.24328832 -0.34384216  0.2033734   0.71359004 -0.0509398
+  0.03364335  0.01147039 -0.01161409]
+
+[ -4.82330650e-01  -1.	-01   3.29110661e-01   4.68113971e-01
+   6.34697680e-01  -4.40330460e-02  -7.49651007e-03   2.16541911e-02
+  -3.52066208e-04] 
+
+[ 0.51770713 -0.24328522  0.34383911 -0.20336716 -0.71359291  0.05094108
+  0.03364232  0.01147124 -0.01161315]
+0.624838858545 0.555325996928
+
+FIRST BOOTSTRAP
+error for eigenvalue for the first component:  0.000118329044992
+error for eigenvalue for the second component:  0.000432204730267
+error for eigenvector for the first component:  [-1.2091411070568185, -1.2090691940908358, -1.2090533820793536, -1.2094265395839687, -1.2079449146246208, -1.2086988405634889, 1.2065924772587258, -1.2090018648815155, -1.2091452630386119]
+error for eigenvector for the first component:  [-0.82480723308344683, -0.8231566166885731, -0.82686492221409047, -0.82387393258342057, -0.82389510256795284, -0.82742758707961128, -0.82218307658062739, -0.82223442120140822, -0.81878387789821128]
+error for angle between the eigenvectors from each component:  0.007009724916020865
+
+
+Components of 9 complexity variables 
+
+1) writing
+ sophistication of the writing system
+Mnemonic devices, Non-written records, script, written record
+2) texts 
+ lists tables and classicifcations, calendar, scared texts, religious literature, practical literature, history, philosophy, scientific literature, fiction
+3) extent of polity territory 
+4) capital population
+5) Government
+presence/absence of official specialized positions; professional soldiers, officers, priests, bureaucrats, and judges, characteristics of the bureaucracy (e.g. examination system), judicial system, specialized buildings (courts) 
+6) infrastructure
+7) Money 
+articles, tokens, precious metals, foreign coins, indigenous coins, paper currency 
+8) Polity population	
+9) levels 
+
+Subsection categories from the dataset 
+1) Bureaucracy Characteristics
+['Full-time bureaucrats' 'Source of support' 'Examination system'
+ 'Merit promotion' 'Specialized government buildings']
+2) Hierarchical Complexity
+['Settlement hierarchy' 'Administrative levels' 'Religious levels'
+ 'Military levels']
+Information
+['Length', 'Area', 'Volume', 'Weight', 'Time', 'Geometrical', 'Other', 'Mnemonic devices', 'Nonwritten records', 'Written records', 'Script', 'Non-phonetic alphabetic writing', 'Phonetic alphabetic writing', 'Lists tables and classifications', 'Calendar', 'Sacred Texts', 'Religious literature', 'Practical literature', 'History', 'Philosophy', 'Scientific literature', 'Fiction', 'Non-phonetic writing', 'Time_1', 'Non-phonetic  writing', 'Non written records', 'Philosophy_1', 'Written records_1']
+Law
+['Formal legal code', 'Judges', 'Courts', 'Professional Lawyers', 'Professional lawyers']
+Other
+['Articles', 'Tokens', 'Precious metals', 'Foreign coins', 'Indigenous coins', 'Paper currency', 'Debt and credit structures', 'Store of wealth', 'Couriers', 'Postal stations', 'General postal service', 'Fastest individual communication']
+Professions
+['Occupational complexity', 'Professional military officers', 'Professional soldiers', 'Professional priesthood']
+Social Scale
+['Polity territory', 'Polity Population', 'Population of the largest settlement', 'Largest communication distance', 'Population of the largest settlement_1']
+Specialized Buildings: Polity Owned
+['Communal buildings', 'Special purpose house', 'Utilitarian public buildings', 'irrigation systems', 'drinking water supply systems', 'markets', 'food storage sites', 'Symbolic buildings', 'Entertainment buildings', 'Knowledge/information buildings', 'Roads', 'Bridges', 'Canals', 'Ports', 'height', 'extent', 'Special purpose sites', 'Ceremonial site', 'Burial site', 'Mines or quarries']
+
+['Communal buildings', 'Special purpose house', 'Utilitarian public buildings', 'irrigation systems', 'drinking water supply systems', 'markets', 'food storage sites', 'Symbolic buildings', 'Entertainment buildings', 'Knowledge/information buildings', 'Roads', 'Bridges', 'Canals', 'Ports', 'Special purpose sites', 'Ceremonial site', 'Burial site', 'Trading emporia', 'Enclosures', 'Mines or quarries', 'Other site', 'height', 'extent', 'Symbolic building', 'cost', 'Drinking water supply systems', 'Markets', 'Food storage sites', 'Irrigation systems']
+In [ ]:
+
+

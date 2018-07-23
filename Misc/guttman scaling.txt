@@ -1,5 +1,5 @@
 Guttman scaling
-1) Trading : ports, trading emphoria, markets
+1) Trading : ports, trading emporia, markets
 2) agriculture : irrigation systems, food storage sites, canals
 3) Social Stratification : Settlement hierarchy
 4) gov.t specialists : religious levels, military levels, professional priesthood, judges, professional lawyers, administrative levels, specialized government buildings, professional soldiers, full-time bureaucrats, 
@@ -9,4 +9,62 @@ Guttman scaling
 8) writing : practical literature, scientific literature, formal legal code, articles, religious writing, sacred texts, history, written records_1, non-phonetic writing, fiction, phonetic alphabetic writing, written records, non-phonetic writing, non-phonetic alphabetic writing, script
 
 polities considering : 
+Iceland  IsCommw  1000  Gauss1
+Iceland  IsCommw  1100  Gauss1
+Iceland  IsCommw  1200  Gauss1
+Iceland  NorKing  1300  Gauss2
+
+Kansai  JpKofun   300  Gauss1
+Kansai  JpKofun   400  Gauss2
+Kansai  JpKofun   500  Gauss2
+
+Konya Plain  TrBrzMD -2000  Gauss1
+Konya Plain  TrNHitt -1100  Gauss1
+Konya Plain  TrPhryg  -800  Gauss2
+
+Orkhon Valley  MnXngnM  -200  Gauss2
+Orkhon Valley  MnXngnL     0  Gauss2
+Orkhon Valley  MnXianb   100  Gauss2
+Orkhon Valley  MnRourn   300  Gauss1
+Orkhon Valley  MnRourn   500  Gauss2
+
+Susiana  IrSusa3 -3000  Gauss1
+Susiana  IrAwanE -2600  Gauss2
+Susiana  IqAkkad -2200  Gauss2
+Susiana  IrShima -2000  Gauss2
+Susiana  IrSukkE -1900  Gauss2
+Susiana  IrSukkE -1800  Gauss2
+Susiana  IrSukkL -1700  Gauss2
+Susiana  IrSukkL -1600  Gauss2
+Susiana  IrMElm1 -1500  Gauss1
+Susiana  IrMElm2 -1400  Gauss2
+Susiana  IrMElm2 -1300  Gauss2
+Susiana  IrNElm1  -900  Gauss2
+Susiana  IrElym2   100  Gauss2
+
+Upper Egypt  EgNaqa2 -3400  Gauss1
+Upper Egypt  EgNaqa3 -3300  Gauss1
+Upper Egypt  EgNaqa3 -3200  Gauss1
+Upper Egypt  EgDyn1* -3100  Gauss2 (population explodes)
+Upper Egypt  EgRegns -2100  Gauss1 (no population data)
+
+fit gaussian into unique 414 polities
+movement along gaussian slower than movement along transition line
+bootstrap the covariance matrix for bivariate gaussian fitting for 9-d matrix
+imputation (arbitrarily remove data points from polities that don't have that many data points)
+gaussian for polities that lie in both gaussians
+guttman scaling
+generative model 
+hidden/latent variable
+
+two Gaussians + exponential 
+two hypotheses 
+1) true data is gaussian, archeologist is two Gaussian - convolutional of exponential with gaussian
+2) true data is two gaussian, archeologist is gaussian - 
+
+
+reshape - melt, cast 
+
+
+
 
