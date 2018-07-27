@@ -1,0 +1,336 @@
+NGA,Polity,Start Period,End Period
+Ghanaian Coast,GhAshnE,1501CE,1701CE
+Ghanaian Coast,GhAshnL,1702CE,1895CE
+Niger Inland Delta,MlJeJe1,250BCE , 49CE
+Niger Inland Delta,MlJeJe2,50CE,399CE
+Niger Inland Delta,MlJeJe3,400CE,899CE
+Niger Inland Delta,MlJeJe4,900CE,999CE
+Niger Inland Delta,MrWagdM,1000CE,1077CE
+Niger Inland Delta,MrWagdL,1100CE,1202CE
+Niger Inland Delta,MlMali*,1235CE,1410CE
+Niger Inland Delta,MlSong2,1493CE,1590CE
+Niger Inland Delta,MaSaadi,1591CE,1618CE
+Niger Inland Delta,MlSegou,1640CE,1711CE
+Niger Inland Delta,MlBaman,1712CE,1818CE
+Upper Egypt,EgBadar,4400BCE,3801BCE
+Upper Egypt,EgNaqa1,3800BCE,3551BCE
+Upper Egypt,EgNaqa2,3550BCE,3301BCE
+Upper Egypt,EgNaqa3,3300BCE,3101BCE
+Upper Egypt,EgDyn1,3100BCE,2901BCE
+Upper Egypt,EgDyn2,2900BCE,2651BCE
+Upper Egypt,EgOldK1,2650BCE,2351BCE
+Upper Egypt,EgOldK2,2350BCE,2151BCE
+Upper Egypt,EgRegns,2150BCE,2017BCE
+Upper Egypt,EgMidKg,2016BCE,1721BCE
+Upper Egypt,EgThebH,1720BCE,1567BCE
+Upper Egypt,EgNKThu,1550BCE,1294BCE
+Upper Egypt,EgNKRam,1293BCE,1071BCE
+Upper Egypt,EgThebL,1070BCE,761BCE
+Upper Egypt,SdKusht,760BCE,656BCE
+Upper Egypt,EgSaite,655BCE,526BCE
+Upper Egypt,IrAchae,525BCE,405BCE
+Upper Egypt,EgIntOc,404BCE,343BCE
+Upper Egypt,EgPtol1,305BCE,218BCE
+Upper Egypt,EgPtol2,217BCE,32BCE
+Upper Egypt,ItRomPr,31BCE , 283CE
+Upper Egypt,TrRomDm,284CE,394CE
+Upper Egypt,TrERom,395CE,632CE
+Upper Egypt,SyCalUm,661CE,749CE
+Upper Egypt,IqAbbs1,750CE,867CE
+Upper Egypt,EgTulIk,868CE,969CE
+Upper Egypt,TnFatim,970CE,1170CE
+Upper Egypt,EgAyyub,1171CE,1259CE
+Upper Egypt,EgMamBh,1260CE,1347CE
+Upper Egypt,EgMamCP,1348CE,1411CE
+Upper Egypt,EgMamBu,1412CE,1516CE
+Upper Egypt,TrOttm3,1517CE,1682CE
+Upper Egypt,TrOttm4,1683CE,1798CE
+Iceland,IsCommw,930CE,1262CE
+Iceland,NorKing,1263CE,1380CE
+Paris Basin,FrBeakr,3200BCE,2201BCE
+Paris Basin,FrAtlBA,2200BCE,1001BCE
+Paris Basin,FrHallA,1000BCE,901BCE
+Paris Basin,FrHallB,900BCE,701BCE
+Paris Basin,FrHallC,700BCE,601BCE
+Paris Basin,FrHallD,600BCE,475BCE
+Paris Basin,FrTeneA,474BCE,325BCE
+Paris Basin,FrTeneB,324BCE,175BCE
+Paris Basin,FrTeneC,174BCE,27BCE
+Paris Basin,ItRomPr,31BCE , 283CE
+Paris Basin,TrRomDm,284CE,473CE
+Paris Basin,FrMervE,481CE,542CE
+Paris Basin,FrMervM,543CE,686CE
+Paris Basin,FrMervL,687CE,750CE
+Paris Basin,FrCarlE,752CE,839CE
+Paris Basin,FrCarlL,840CE,986CE
+Paris Basin,FrCaptE,987CE,1149CE
+Paris Basin,FrCaptL,1150CE,1327CE
+Paris Basin,FrValoE,1328CE,1449CE
+Paris Basin,FrValoL,1450CE,1588CE
+Paris Basin,FrBurbE,1589CE,1659CE
+Paris Basin,FrBurbL,1660CE,1788CE
+Latium,ItLatCA,3600BCE,1801BCE
+Latium,ItLatBA,1800BCE,1001BCE
+Latium,ItLatIA,1000BCE,717BCE
+Latium,ItRomRg,716BCE,510BCE
+Latium,ItRomER,509BCE,265BCE
+Latium,ItRomMR,264BCE,134BCE
+Latium,ItRomLR,133BCE,29BCE
+Latium,ItRomPr,31BCE , 283CE
+Latium,TrRomDm,284CE,394CE
+Latium,ItRomWe,395CE,457CE
+Latium,ItOstrg,493CE,554CE
+Latium,ItRav,568CE,710CE
+Latium,ItStPet,711CE,903CE
+Latium,ItPapEM,904CE,1197CE
+Latium,ItPapHM,1198CE,1308CE
+Latium,ItPapRn,1378CE,1526CE
+Latium,ItPapM1,1527CE,1647CE
+Latium,ItPapM2,1648CE,1800CE
+Lena River Valley,RuYakuE,1400CE,1642CE
+Lena River Valley,RuYakuL,1643CE,1900CE
+Orkhon Valley,MnXngnE,1400BCE,300BCE
+Orkhon Valley,MnXngnM,209BCE,60BCE
+Orkhon Valley,MnXngnL,59BCE , 99CE
+Orkhon Valley,MnXianb,100CE,250CE
+Orkhon Valley,MnRourn,300CE,551CE
+Orkhon Valley,MnTurk2,583CE,630CE
+Orkhon Valley,MnUigur,684CE,744CE
+Orkhon Valley,MnShiwe,745CE,840CE
+Orkhon Valley,MnKhitn,841CE,907CE
+Orkhon Valley,MnMongE,960CE,1125CE
+Orkhon Valley,MnMngKh,1126CE,1205CE
+Orkhon Valley,CnYuan*,1206CE,1367CE
+Orkhon Valley,MnMongL,1368CE,1689CE
+Orkhon Valley,MnZungh,1695CE,1745CE
+Orkhon Valley,CnQingL,1796CE,1912CE
+Sogdiana,TjSaraz,3500BCE,2001BCE
+Sogdiana,KzAndro,2000BCE,1401BCE
+Sogdiana,UzKok01,1400BCE,1000BCE
+Sogdiana,UzKhw01,999BCE,751BCE
+Sogdiana,UzKok02,750BCE,600BCE
+Sogdiana,IrAchae,520BCE,330BCE
+Sogdiana,IrSeleu,300BCE,249BCE
+Sogdiana,AfGrBct,248BCE,130BCE
+Sogdiana,AfTochr,129BCE , 29CE
+Sogdiana,AfKushn,30CE,230CE
+Sogdiana,IrSasn1,231CE,387CE
+Sogdiana,AfKidar,388CE,425CE
+Sogdiana,AfHepht,426CE,563CE
+Sogdiana,KgWTurk,564CE,603CE
+Sogdiana,UzSogdi,604CE,711CE
+Sogdiana,IqAbbs1,750CE,875CE
+Sogdiana,UzSamnd,876CE,990CE
+Sogdiana,KgKarKh,991CE,1089CE
+Sogdiana,IrSeljq,1090CE,1157CE
+Sogdiana,KgKarKh,1158CE,1212CE
+Sogdiana,UzChagt,1263CE,1361CE
+Sogdiana,UzTimur,1370CE,1526CE
+Sogdiana,UzJanid,1599CE,1747CE
+Yemeni Coastal Plain,YeQasmi,1637CE,1805CE
+Yemeni Coastal Plain,TrOttm5,1873CE,1919CE
+Konya Plain,TrNeoER,9600BCE,7001BCE
+Konya Plain,TrNeoCR,7000BCE,6601BCE
+Konya Plain,TrNeoLT,6600BCE,6001BCE
+Konya Plain,TrClcER,6000BCE,5501BCE
+Konya Plain,Gap,5500BCE,5001BCE
+Konya Plain,TrClcLT,5000BCE,3001BCE
+Konya Plain,TrBrzER,3000BCE,2001BCE
+Konya Plain,TrBrzMD,2000BCE,1701BCE
+Konya Plain,TrHatOK,1650BCE,1501BCE
+Konya Plain,TrBrzL2,1500BCE,1400BCE
+Konya Plain,TrHatNK,1344BCE,1181BCE
+Konya Plain,TrNHitt,1180BCE,901BCE
+Konya Plain,TrTabal,900BCE,837BCE
+Konya Plain,TrPhryg,836BCE,696BCE
+Konya Plain,TrLydia,670BCE,547BCE
+Konya Plain,IrAchae,546BCE,334BCE
+Konya Plain,TrLysim,300BCE,282BCE
+Konya Plain,IrSeleu,281BCE,190BCE
+Konya Plain,TrCappL,129BCE,95BCE
+Konya Plain,ItRomPr,31BCE , 283CE
+Konya Plain,TrRomDm,284CE,394CE
+Konya Plain,TrERom,395CE,607CE
+Konya Plain,TrByzM1,632CE,866CE
+Konya Plain,TrByzM2,867CE,1072CE
+Konya Plain,TrRum,1093CE,1243CE
+Konya Plain,IrIlkhn,1263CE,1326CE
+Konya Plain,TrOttm1,1393CE,1402CE
+Konya Plain,TrOttm2,1421CE,1516CE
+Konya Plain,TrOttm3,1517CE,1682CE
+Konya Plain,TrOttm4,1683CE,1838CE
+Konya Plain,TrOttm5,1839CE,1922CE
+Susiana,IrPrCer,7800BCE,7201BCE
+Susiana,IrForma,7200BCE,7001BCE
+Susiana,IrArcha,7000BCE,6001BCE
+Susiana,IrKhzE*,6000BCE,5701BCE
+Susiana,IrKhzEM,5700BCE,5101BCE
+Susiana,IrKhzM*,5100BCE,4701BCE
+Susiana,IrKhzL*,4700BCE,4301BCE
+Susiana,IrSusa1,4300BCE,3801BCE
+Susiana,IrSusa2,3800BCE,3101BCE
+Susiana,IrSusa3,3100BCE,2676BCE
+Susiana,IrAwanE,2675BCE,2251BCE
+Susiana,IqAkkad,2250BCE,2154BCE
+Susiana,IqUrIII,2112BCE,2004BCE
+Susiana,IrShima,2028BCE,1901BCE
+Susiana,IrSukkE,1900BCE,1701BCE
+Susiana,IrSukkL,1700BCE,1501BCE
+Susiana,IrMElm1,1500BCE,1401BCE
+Susiana,IrMElm2,1400BCE,1201BCE
+Susiana,IrMElm3,1200BCE,1101BCE
+Susiana,IrElmCP,1100BCE,901BCE
+Susiana,IrNElm1,900BCE,744BCE
+Susiana,IrNElm2,743BCE,647BCE
+Susiana,IrNElm3,612BCE,540BCE
+Susiana,IrAchae,539BCE,331BCE
+Susiana,IrSeleu,312BCE,144BCE
+Susiana,IrPart1,143BCE , 24CE
+Susiana,IrElym2,25CE,215CE
+Susiana,IrSasn1,220CE,498CE
+Susiana,IrSasn2,499CE,642CE
+Susiana,SyCalUm,663CE,749CE
+Susiana,IqAbbs1,750CE,946CE
+Susiana,IrBuyid,947CE,1055CE
+Susiana,IrSeljq,1056CE,1190CE
+Susiana,IqAbbs2,1191CE,1207CE
+Susiana,IrIlkhn,1263CE,1335CE
+Susiana,UzTimur,1394CE,1470CE
+Susiana,IrAkKoy,1471CE,1504CE
+Susiana,IrSafvd,1505CE,1722CE
+Susiana,IrQajar,1794CE,1925CE
+Garo Hills,InGaroE,1775CE,1867CE
+Garo Hills,InGaroL,1868CE,1956CE
+Deccan,InDecNL,2700BCE,1201BCE
+Deccan,InDecIA,1200BCE,301BCE
+Deccan,InMaury,300BCE,206BCE
+Deccan,InDecKg,205BCE,101BCE
+Deccan,InSataL,100BCE,203CE
+Deccan,InVakat,286CE,335CE
+Deccan,Gap,351CE,450CE
+Deccan,InKadam,451CE,540CE
+Deccan,InChaBd,541CE,756CE
+Deccan,ChaBd,757CE,973CE
+Deccan,InRasht,974CE,1055CE
+Deccan,InChaKl,1192CE,1253CE
+Deccan,InHoysa,1280CE,1310CE
+Deccan,InVijay,1336CE,1646CE
+Deccan,InMugl*,1687CE,1720CE
+Kachi Plain,PkAcerN,7500BCE,5501BCE
+Kachi Plain,PkCeraN,5500BCE,4001BCE
+Kachi Plain,PkChalc,4000BCE,3201BCE
+Kachi Plain,PkPreUr,3200BCE,2501BCE
+Kachi Plain,PkUrbn1,2500BCE,2101BCE
+Kachi Plain,PkUrbn2,2100BCE,1801BCE
+Kachi Plain,PkPostU,1800BCE,1301BCE
+Kachi Plain,PkProto,1300BCE,551BCE
+Kachi Plain,IrAchae,550BCE,329BCE
+Kachi Plain,InMaury,303BCE,194BCE
+Kachi Plain,PkIndGr,145BCE,96BCE
+Kachi Plain,IrPart1,95BCE , 21CE
+Kachi Plain,AfKushn,30CE,250CE
+Kachi Plain,IrSasn1,251CE,495CE
+Kachi Plain,AfHepht,496CE,531CE
+Kachi Plain,IrSasn2,532CE,641CE
+Kachi Plain,SyCalUm,670CE,750CE
+Kachi Plain,IqAbbs1,750CE,861CE
+Kachi Plain,PkSind1,862CE,1192CE
+Kachi Plain,AfGhurd,1193CE,1206CE
+Kachi Plain,InDelh*,1207CE,1339CE
+Kachi Plain,PkSind2,1340CE,1519CE
+Kachi Plain,InMugl*,1526CE,1740CE
+Kachi Plain,AfDurrn,1748CE,1826CE
+Kapuasi Basin,IdBrokE,1650CE,1841CE
+Kapuasi Basin,IdBrokL,1842CE,1987CE
+Central Java,IdCJBun,400BCE , 499CE
+Central Java,IdKalin,500CE,731CE
+Central Java,IdMedng,732CE,1019CE
+Central Java,IdKedir,1049CE,1222CE
+Central Java,IdMajap,1291CE,1518CE
+Central Java,IdMatrm,1568CE,1703CE
+Cambodian Basin,KhFunaE,225CE,539CE
+Cambodian Basin,KhFunaL,540CE,639CE
+Cambodian Basin,KhChenl,640CE,801CE
+Cambodian Basin,KhAngkE,802CE,1079CE
+Cambodian Basin,KhAngkC,1080CE,1219CE
+Cambodian Basin,KhAngkL,1220CE,1431CE
+Cambodian Basin,KhCambd,1432CE,1593CE
+Cambodian Basin,ThAyuth,1594CE,1767CE
+Cambodian Basin,ThRattn,1782CE,1873CE
+Southern China Hills,CnHQngL,1701CE,1895CE
+Southern China Hills,CnHChin,1896CE,1941CE
+Kansai,JpYayoi,300BCE , 249CE
+Kansai,JpKofun,250CE,537CE
+Kansai,JpAsuka,538CE,710CE
+Kansai,JpHeian,794CE,1184CE
+Kansai,JpKamak,1185CE,1333CE
+Kansai,JpAshik,1336CE,1466CE
+Kansai,JpSengk,1467CE,1567CE
+Kansai,JpAzMom,1568CE,1602CE
+Kansai,JpTokgw,1603CE,1868CE
+Middle Yellow River Valley,CnYngsh,5000BCE,3001BCE
+Middle Yellow River Valley,CnLngsh,3000BCE,1900BCE
+Middle Yellow River Valley,CnErlit,1850BCE,1651BCE
+Middle Yellow River Valley,CnErlig,1650BCE,1251BCE
+Middle Yellow River Valley,CnShang,1250BCE,1123BCE
+Middle Yellow River Valley,CnWZhou,1122BCE,795BCE
+Middle Yellow River Valley,CnJinSA,794BCE,489BCE
+Middle Yellow River Valley,CnWeiWS,488BCE,223BCE
+Middle Yellow River Valley,cnimqin,225BCE,207BCE
+Middle Yellow River Valley,CnWHan*,202BCE , 9CE
+Middle Yellow River Valley,CnEHan*,25CE,219CE
+Middle Yellow River Valley,CnErJin,265CE,317CE
+Middle Yellow River Valley,CnNWei*,386CE,557CE
+Middle Yellow River Valley,CnSui**,581CE,617CE
+Middle Yellow River Valley,CnTangE,618CE,762CE
+Middle Yellow River Valley,CnTangL,763CE,907CE
+Middle Yellow River Valley,CnNSong,960CE,1126CE
+Middle Yellow River Valley,CnLrJin,1127CE,1234CE
+Middle Yellow River Valley,CnYuan*,1271CE,1367CE
+Middle Yellow River Valley,CnMing*,1368CE,1643CE
+Middle Yellow River Valley,CnQingE,1644CE,1795CE
+Middle Yellow River Valley,CnQingL,1796CE,1912CE
+Finger Lakes,UsIroqE,1566CE,1713CE
+Finger Lakes,UsIroqL,1714CE,1848CE
+Cahokia,USMisEW,600BCE,151BCE
+Cahokia,USMisMW,150BCE , 299CE
+Cahokia,USMisRo,300CE,449CE
+Cahokia,USMisMu,450CE,599CE
+Cahokia,USMisPa,600CE,749CE
+Cahokia,USMisSp,750CE,899CE
+Cahokia,USMisME,900CE,1049CE
+Cahokia,USCahoE,1050CE,1199CE
+Cahokia,USCahoL,1200CE,1274CE
+Cahokia,USMisSd,1275CE,1399CE
+Cahokia,USOneot,1400CE,1639CE
+Cahokia,USIllin,1640CE,1832CE
+Valley of Oaxaca,MxTieLa,1400BCE,1151BCE
+Valley of Oaxaca,MxSanGu,1150BCE,701BCE
+Valley of Oaxaca,MxRosar,700BCE,501BCE
+Valley of Oaxaca,MxAlb1E,500BCE,301BCE
+Valley of Oaxaca,MxAlb1L,300BCE,101BCE
+Valley of Oaxaca,MxAlb2,100BCE , 199CE
+Valley of Oaxaca,MxAlb3A,200CE,499CE
+Valley of Oaxaca,MxAlb3B,500CE,899CE
+Valley of Oaxaca,MxAlbEP,900CE,1100CE
+Valley of Oaxaca,MxAlbLP,1100CE,1520CE
+Lowland Andes,EcJivaE,1534CE,1830CE
+Lowland Andes,EcJivaL,1831CE,1931CE
+North Colombia,CoNahua,250CE,1049CE
+North Colombia,CoTairo,1050CE,1524CE
+Cuzco,PeCuzLF,1CE,199CE
+Cuzco,PeCuzE1,200CE,499CE
+Cuzco,PeCuzE2,500CE,649CE
+Cuzco,PeWari,650CE,999CE
+Cuzco,PeCuzL1,1000CE,1249CE
+Cuzco,PeCuzL2,1250CE,1399CE
+Cuzco,PeInca*,1400CE,1532CE
+Oro PNG,PgOrokE,1734CE,1883CE
+Oro PNG,PgOrokL,1884CE,1942CE
+Chuuk Islands,FmTrukE,1775CE,1885CE
+Chuuk Islands,FmTrukL,1886CE,1948CE
+Big Island Hawaii,Hawaii1,800CE,1199CE
+Big Island Hawaii,Hawaii2,1200CE,1649CE
+Big Island Hawaii,Hawaii3,1650CE,1777CE
+Big Island Hawaii,USKameh,1778CE,1819CE
+Big Island Hawaii,USHawai,1820CE,1854CE
