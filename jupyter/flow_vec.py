@@ -1,37 +1,16 @@
 import pandas as pd 
 import numpy as np
-from sklearn.decomposition import PCA, FastICA
 from sklearn.preprocessing import StandardScaler
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn import linear_model
-import math
-import progressbar as pb
-import time 
+from sklearn.decomposition import PCA, FastICA
+from multiprocessing import Pool
+import os
+# read csv/excel data files 
+pnas_data1 = pd.read_csv("pnas_data1.csv")
 
-# class for progressbar
-class progress_timer:
-
-    def __init__(self, n_iter, description=None):
-        self.n_iter = n_iter
-        self.iter = 0
-        self.description = description + ': '
-        self.timer = None
-        self.initialize()
-
-    def initialize(self):
-        #initialize timer
-        widgets = [self.description, pb.Percentage(), ' ',   
-                   pb.Bar(marker=pb.RotatingMarker()), ' ', pb.ETA()]
-        self.timer = pb.ProgressBar(widgets=widgets, maxval=self.n_iter).start()
-
-    def update(self, q=1):
-        #update timer
-        self.timer.update(self.iter)
-        self.iter += q
-
-    def finish(self):
-        #end timer
-        self.timer.finish()
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
 def svd(data):
     """
@@ -45,11 +24,17 @@ def svd(data):
     
     return P, D, Q
 
-def is_pos_def(x):
-    """
-    Check if the matrix is positive semidefinite 
-    """
-    return np.all(np.linalg.eigvals(x) > 0)
+# format data 
+
+# extract 9 Complexity Characteristic variables 
+features = ['PolPop', 'PolTerr', 'CapPop', 'levels', 'government','infrastr', 'writing', 'texts', 'money']
+
+# take subset of original data table with 9 CCs and change it into numpy array 
+data_mat = StandardScaler().fit_transform(pnas_data1.loc[:, features].values)
+times = pnas_data1.loc[:, ['Time']].values
+ngas = pnas_data1.NGA.unique().tolist()
+P, D, Q = svd(data_mat)
+data = np.matmul(data_mat, Q.T)
 
 def gaussian_idx(data_mat):
     """
@@ -71,13 +56,10 @@ def gaussian_idx(data_mat):
     return gauss1_idx, gauss2_idx
 
 # flow vectors for each NGAs
-def flow_vec(gauss1_idx, gauss2_idx, ngas, data, data_idx):
+def flow_vec(ngas, data, data_idx):
     """
     Find the average of the flow vectors 
     """
-    gauss1_time = [times[i] for i in gauss1_idx] # time for the first gaussian data
-    gauss2_time = [times[j] for j in gauss2_idx] # time for the second gaussian data
-
     nga_dict = {key:list() for key in ngas}
     vec_coef1 = list() # coefficients for overall flow vectors for each ngas in the first gaussian
     vec_ic1 = list() # intercept for overall flow vectors for each ngas in the first gaussian
@@ -121,7 +103,8 @@ def flow_vec(gauss1_idx, gauss2_idx, ngas, data, data_idx):
             vec_ic1.append(model1.intercept_)
             vec_coef2.append(model2.coef_)
             vec_ic2.append(model2.intercept_)
-        
+    
+    # find the average coefficients and intercepts for each Gaussian
     gauss1_coef = np.mean(vec_coef1, axis=0)
     gauss1_ic = np.mean(vec_ic1, axis=0)
     gauss2_coef = np.mean(vec_coef2, axis=0)
@@ -134,7 +117,7 @@ def flow_vec(gauss1_idx, gauss2_idx, ngas, data, data_idx):
 
     def line_vec(time, coef, intercept):
         return [(coef*i+intercept) for i in time]
-
+    
     gauss1 = line_vec(gauss1_t, gauss1_coef, ic1)
     gauss2 = line_vec(gauss2_t, gauss2_coef, ic2)
 
@@ -146,7 +129,56 @@ def flow_vec(gauss1_idx, gauss2_idx, ngas, data, data_idx):
     ols1 = linear_model.LinearRegression()
     model1= ols1.fit(gauss1_x, gauss1_y)
     ols2 = linear_model.LinearRegression()
-    model2= ols1.fit(gauss2_x, gauss2_y)
+    model2= ols2.fit(gauss2_x, gauss2_y)
 
     return model1.coef_, model2.coef_
+
+def pl(n):
+    np.random.seed()
+    
+    data_idx = dict()
+    
+    resample = np.random.randint(0, len(data), size=len(data))
+    resampled_mat = data[resample]
+
+    data_idx = dict(enumerate(resample.tolist()))
+    
+    assert resampled_mat.shape == data.shape # check if the resampled matrix has same dimension as data matrix
+
+    first_coef, sec_coef = flow_vec(ngas, resampled_mat, data_idx)
+    first_ang, sec_ang = np.arctan(first_coef[0][0]), np.arctan(sec_coef[0][0])
+    
+    return first_ang, sec_ang
+
+gauss1_idx, gauss2_idx = gaussian_idx(data_mat)
+gauss1_time = [times[i] for i in gauss1_idx] # time for the first gaussian data
+gauss2_time = [times[j] for j in gauss2_idx] # time for the second gaussian data
+coef1, coef2 = flow_vec(ngas, data, {key:key for key in range(len(data))})
+ang1, ang2 = np.arctan(coef1[0]), np.arctan(coef2[0])
+
+def bstr_flow(ngas, data, n = 5000):
+    """
+    Bootstrap the angle between the flow vectors and the x axis for each cluster
+    """
+    p = Pool(os.cpu_count()-1)
+    results = p.map(pl, range(n))
+    angle1, angle2 = zip(*results)
+
+    # angle1 = []; angle2 = []
+    # for i in range(n):
+    # 	a, b = pl()
+    # 	angle1.append(a)
+    # 	angle2.append(b)
+
+    return angle1, angle2
+
+angle1, angle2 = bstr_flow(ngas, data)
+
+with open('angle1.txt', 'w') as f:  
+    for angle in angle1:
+        f.write('%s\n' % angle)
+
+with open('angle2.txt', 'w') as f:
+	for angle in angle2:
+		f.write('%s\n' % angle)
 

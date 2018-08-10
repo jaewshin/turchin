@@ -5,6 +5,7 @@ Scrape all the NGAs and their respective time periods from seshat dataset
 import requests
 from bs4 import BeautifulSoup
 import csv 
+import os 
 
 URL = 'http://seshatdatabank.info/data/'
 
@@ -51,7 +52,7 @@ def nga_inspect(ngas, ngas_html):
 
 			times = str(html.text)
 			times.replace(" ", "")
-			
+
 			try:
 				start, end = times.split('-')
 
@@ -85,7 +86,9 @@ def write_csv(ngas_period):
 	Given a list of [NGA, polity, starting time, ending time], write it to a 
 	csv file
 	"""
-	with open('scraped_seshat.csv', 'w', newline = '') as f:
+	dataPath = os.path.abspath(os.path.join("./..","data","scraped_seshat.csv")) 
+
+	with open(dataPath, 'w', newline = '') as f:
 		writer = csv.writer(f)
 		writer.writerow(['NGA', 'Polity', 'Start Period', 'End Period'])
 		writer.writerows(ngas_period)
