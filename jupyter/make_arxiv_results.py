@@ -7,6 +7,7 @@ import seaborn as sns; sns.set()
 from sklearn.mixture import GaussianMixture as GMM
 from collections import defaultdict
 import os
+import math
 import turchin
 
 # read csv/excel data files 
@@ -44,20 +45,17 @@ impute = ['V'+str(i) for i in range(1, numImpute+1)]
 np.random.seed(780745)
 i = np.random.randint(numImpute)
 
-PC1_array = StandardScaler().fit_transform(PC1_df.loc[:, [impute[i]]].values)
-# filtered_pnas1 = pnas_CC.loc[:, cc_names].values
-#num_bins = 25
-num_bins = 50
 
-# the histogram/gaussian mixture model of the data
-n, bins, patches = plt.hist(PC1_array, num_bins, normed=1, facecolor='blue', alpha=0.5)
- 
-plt.title(str(i+1)+"th imputed dataset")
+# histogram of PC1 for pooled imputations
+num_bins = 50
+n, bins, patches = plt.hist(PC_matrix[:,0], num_bins, normed=1, facecolor='blue', alpha=0.5)
+plt.title("Pooled over imputations")
 plt.xlabel("Projection onto first Principle Component")
 plt.legend()
-plt.savefig("pc1_histogram.png")
-plt.savefig("pc1_histogram.eps")
-
+fileStem = "pc1_histogram_impute_pooled"
+plt.savefig(fileStem + ".png")
+plt.savefig(fileStem + ".eps")
+plt.close()
 
 # Plot PC1 by time for each region
 # First, map from World Region to Late, Intermediate, and Early NGAs
@@ -70,60 +68,105 @@ regionDict["Southeast Asia"] = ["Kapuasi Basin","Central Java","Cambodian Basin"
 regionDict["East Asia"] = ["Southern China Hills","Kansai","Middle Yellow River Valley"]
 regionDict["North America"] = ["Finger Lakes","Cahokia","Valley of Oaxaca"]
 regionDict["South America"] = ["Lowland Andes","North Colombia","Cuzco"]
-regionDict["Oceania-Australia"] = ["Oro, PNG","Chuuk Islands","Big Island Hawaii"]
+regionDict["Oceania-Australia"] = ["Oro PNG","Chuuk Islands","Big Island Hawaii"]
 
 worldRegions = list(regionDict.keys())
 
-#for region in worldRegions:
-#    for nga in regionDict[region]
-
-#9-d interpolation and scatter plot by NGAs
-
-# interpolating on the 1-d principal axis
-nga_interpolated = defaultdict(list)
-
-for impute_index in range(1, numImpute+1):
-    # 1) polity-based interpolation
-    impute_set = CC_df[CC_df.irep==impute_index]
-    unique_regions = impute_set.NGA.unique().tolist()
-
-    for nga in unique_regions:
-        times = sorted(impute_set[impute_set.NGA == nga].Time.unique().tolist())
-        data_idx = list()
-        for t in times: 
-            data_idx.append(CC_df.index[(CC_df['NGA'] == nga) &
-                                             (CC_df['Time'] == t) &
-                                             (CC_df['irep'] == impute_index)].tolist()[0])
-        nga_interpolated[nga].extend([(PC_matrix[:,0][idx], time) for idx, time in zip(data_idx, times)])
-        
-        if len(times) != ((max(times)-min(times))/100)+1:
-            for time in range(len(times)-1):
-                if times[time+1]-times[time] != 100:
-                    # linear interpolation
-                    val1_idx = CC_df.index[(CC_df['NGA'] == nga) & 
-                                                (CC_df['Time'] == times[time]) &
-                                                (CC_df['irep'] == impute_index)].tolist()[0]
-                    val2_idx = CC_df.index[(CC_df['NGA'] == nga) & 
-                                                (CC_df['Time'] == times[time+1]) &
-                                               (CC_df['irep'] == impute_index)].tolist()[0]
-
-                    diff = PC_matrix[:,0][val2_idx] - PC_matrix[:,0][val1_idx]
-                    
-                    num_steps = int((times[time+1]-times[time])/100)
-
-                    for i in range(1, num_steps):
-                        diff_step = (i/num_steps)*diff
-                        interpol = diff_step+PC_matrix[:,0][val1_idx]
-                        nga_interpolated[nga].append((interpol, times[time]+100*i))
-    
-colors = iter(cm.rainbow(np.linspace(0, 1, len(NGAs))))
-for nga in NGAs:
-    period = [time for val, time in nga_interpolated[nga]]
-    pc_proj = [val for val, time in nga_interpolated[nga]]
-    plt.scatter(period, pc_proj, s=1.5, color=next(colors))
-plt.title('interpolated')
-plt.xlabel('time period')
-plt.ylabel('pc projection value')
-plt.savefig('interpolated_scatter.png', transparent=True)
-plt.show()
+#xmin = min(CC_df['Time'])
+#xmax = max(CC_df['Time'])
+#xmin = -10000
+xmin = -4000
+xmax = 2000
+#ymin = min(PC_matrix[:,0])
+#ymax = max(PC_matrix[:,0])
+ymin = -7
+ymax = 7
+#f, axes = plt.subplots(int(len(worldRegions)/2),1, sharex=True, sharey=True,figsize=(3,10))
+#f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(1,10))
+f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(6,10))
+axes[0].set_xlim([xmin,xmax])
+axes[0].set_ylim([ymin,ymax])
+#axes[0].xlabel("Calendar Date [AD]")
+#axes[0].ylabel("PC1")
+for i,reg in enumerate(worldRegions):
+    regList = list(reversed(regionDict[reg]))
+    #plotNum = math.floor(i/2)
+    plotNum = i
+    for nga in regList:
+        indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
+        times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
+        pc1 = list()
+        for t in times:
+            ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
+            pc1.append(np.mean(PC_matrix[ind,0]))
+            
+        axes[plotNum].scatter(times,pc1,s=10)
+    #axes[plotNum].set_title(reg,fontsize=10)
+    s = '{' + regList[0] + '; ' + regList[1] + '; ' + regList[2] + '}'
+    axes[plotNum].set_title(s,fontsize=10)
+        #axes[plotNum].scatter(CC_df.loc[ind,'Time'],PC_matrix[ind,0],alpha=.4,s=1.5)
+    #axes[plotNum].legend(regList,bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0)
+    #axes[plotNum].legend(regList,bbox_to_anchor=(0,1.02,1,.102),loc=3,ncol=3,mode='expand',borderaxespad=0)
+        #axes[i].xlim(xmin,xmax)
+    #plt.ylim(ymin,ymax)
+    #if i % 2 == 1:
+    #    axes[plotNum].legend(regListPrev + regList,bbox_to_anchor=(1, 0.5))
+    #regListPrev = regList
+f.subplots_adjust(hspace=.5)
+plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+plt.savefig("world.pdf")
 plt.close()
+
+##for region in worldRegions:
+##    for nga in regionDict[region]
+#
+##9-d interpolation and scatter plot by NGAs
+#
+## interpolating on the 1-d principal axis
+#nga_interpolated = defaultdict(list)
+#
+#for impute_index in range(1, numImpute+1):
+#    # 1) polity-based interpolation
+#    impute_set = CC_df[CC_df.irep==impute_index]
+#    unique_regions = impute_set.NGA.unique().tolist()
+#
+#    for nga in unique_regions:
+#        times = sorted(impute_set[impute_set.NGA == nga].Time.unique().tolist())
+#        data_idx = list()
+#        for t in times: 
+#            data_idx.append(CC_df.index[(CC_df['NGA'] == nga) &
+#                                             (CC_df['Time'] == t) &
+#                                             (CC_df['irep'] == impute_index)].tolist()[0])
+#        nga_interpolated[nga].extend([(PC_matrix[:,0][idx], time) for idx, time in zip(data_idx, times)])
+#        
+#        if len(times) != ((max(times)-min(times))/100)+1:
+#            for time in range(len(times)-1):
+#                if times[time+1]-times[time] != 100:
+#                    # linear interpolation
+#                    val1_idx = CC_df.index[(CC_df['NGA'] == nga) & 
+#                                                (CC_df['Time'] == times[time]) &
+#                                                (CC_df['irep'] == impute_index)].tolist()[0]
+#                    val2_idx = CC_df.index[(CC_df['NGA'] == nga) & 
+#                                                (CC_df['Time'] == times[time+1]) &
+#                                               (CC_df['irep'] == impute_index)].tolist()[0]
+#
+#                    diff = PC_matrix[:,0][val2_idx] - PC_matrix[:,0][val1_idx]
+#                    
+#                    num_steps = int((times[time+1]-times[time])/100)
+#
+#                    for i in range(1, num_steps):
+#                        diff_step = (i/num_steps)*diff
+#                        interpol = diff_step+PC_matrix[:,0][val1_idx]
+#                        nga_interpolated[nga].append((interpol, times[time]+100*i))
+#    
+#colors = iter(cm.rainbow(np.linspace(0, 1, len(NGAs))))
+#for nga in NGAs:
+#    period = [time for val, time in nga_interpolated[nga]]
+#    pc_proj = [val for val, time in nga_interpolated[nga]]
+#    plt.scatter(period, pc_proj, s=1.5, color=next(colors))
+#plt.title('interpolated')
+#plt.xlabel('time period')
+#plt.ylabel('pc projection value')
+#plt.savefig('interpolated_scatter.png', transparent=True)
+#plt.show()
+#plt.close()
