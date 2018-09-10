@@ -74,8 +74,8 @@ worldRegions = list(regionDict.keys())
 
 #xmin = min(CC_df['Time'])
 #xmax = max(CC_df['Time'])
-#xmin = -10000
-xmin = -4000
+xmin = -10000
+#xmin = -4000
 xmax = 2000
 #ymin = min(PC_matrix[:,0])
 #ymax = max(PC_matrix[:,0])
@@ -83,7 +83,7 @@ ymin = -7
 ymax = 7
 #f, axes = plt.subplots(int(len(worldRegions)/2),1, sharex=True, sharey=True,figsize=(3,10))
 #f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(1,10))
-f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(6,10))
+f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(6,30))
 axes[0].set_xlim([xmin,xmax])
 axes[0].set_ylim([ymin,ymax])
 #axes[0].xlabel("Calendar Date [AD]")
@@ -114,8 +114,34 @@ for i,reg in enumerate(worldRegions):
     #regListPrev = regList
 f.subplots_adjust(hspace=.5)
 plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
-plt.savefig("world.pdf")
+plt.savefig("pc1_vs_time_stacked_by_region.pdf")
 plt.close()
+
+early = [regionDict[reg][2] for reg in worldRegions]
+middle = [regionDict[reg][1] for reg in worldRegions]
+late = [regionDict[reg][0] for reg in worldRegions]
+
+allStarts = (early,middle,late)
+startString = ['Early','Middle','Late']
+
+f, axes = plt.subplots(len(allStarts),1, sharex=True, sharey=True,figsize=(4,10))
+axes[0].set_xlim([xmin,xmax])
+axes[0].set_ylim([ymin,ymax])
+for i,start in enumerate(allStarts):
+    for nga in start:
+        indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
+        times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
+        pc1 = list()
+        for t in times:
+            ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
+            pc1.append(np.mean(PC_matrix[ind,0]))
+        axes[i].scatter(times,pc1,s=10)
+    axes[i].set_title(startString[i],fontsize=10)
+#f.subplots_adjust(hspace=.5)
+plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+plt.savefig("pc1_vs_time_stacked_by_start.pdf")
+plt.close()
+            
 
 ##for region in worldRegions:
 ##    for nga in regionDict[region]
