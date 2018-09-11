@@ -83,15 +83,16 @@ ymin = -7
 ymax = 7
 #f, axes = plt.subplots(int(len(worldRegions)/2),1, sharex=True, sharey=True,figsize=(3,10))
 #f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(1,10))
-f, axes = plt.subplots(len(worldRegions),1, sharex=True, sharey=True,figsize=(6,30))
-axes[0].set_xlim([xmin,xmax])
-axes[0].set_ylim([ymin,ymax])
+f, axes = plt.subplots(int(len(worldRegions)/2),2, sharex=True, sharey=True,figsize=(12,15))
+axes[0,0].set_xlim([xmin,xmax])
+axes[0,0].set_ylim([ymin,ymax])
 #axes[0].xlabel("Calendar Date [AD]")
 #axes[0].ylabel("PC1")
 for i,reg in enumerate(worldRegions):
     regList = list(reversed(regionDict[reg]))
     #plotNum = math.floor(i/2)
-    plotNum = i
+    m = i % int(len(worldRegions)/2) # mod; result is 0, 1, 2, 3, or 4
+    n = i // int(len(worldRegions)/2) # integer division; result is 0 or 1
     for nga in regList:
         indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
         times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
@@ -100,10 +101,12 @@ for i,reg in enumerate(worldRegions):
             ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
             pc1.append(np.mean(PC_matrix[ind,0]))
             
-        axes[plotNum].scatter(times,pc1,s=10)
+        axes[m,n].scatter(times,pc1,s=10)
     #axes[plotNum].set_title(reg,fontsize=10)
     s = '{' + regList[0] + '; ' + regList[1] + '; ' + regList[2] + '}'
-    axes[plotNum].set_title(s,fontsize=10)
+    axes[m,n].set_title(s,fontsize=10)
+    if m != 4:
+        plt.setp(axes[m,n].get_xticklabels(), visible=False)
         #axes[plotNum].scatter(CC_df.loc[ind,'Time'],PC_matrix[ind,0],alpha=.4,s=1.5)
     #axes[plotNum].legend(regList,bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0)
     #axes[plotNum].legend(regList,bbox_to_anchor=(0,1.02,1,.102),loc=3,ncol=3,mode='expand',borderaxespad=0)
@@ -113,8 +116,10 @@ for i,reg in enumerate(worldRegions):
     #    axes[plotNum].legend(regListPrev + regList,bbox_to_anchor=(1, 0.5))
     #regListPrev = regList
 f.subplots_adjust(hspace=.5)
-plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+#plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
 plt.savefig("pc1_vs_time_stacked_by_region.pdf")
+plt.savefig("pc1_vs_time_stacked_by_region.eps")
+plt.savefig("pc1_vs_time_stacked_by_region.png")
 plt.close()
 
 early = [regionDict[reg][2] for reg in worldRegions]
@@ -138,8 +143,10 @@ for i,start in enumerate(allStarts):
         axes[i].scatter(times,pc1,s=10)
     axes[i].set_title(startString[i],fontsize=10)
 #f.subplots_adjust(hspace=.5)
-plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+#plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
 plt.savefig("pc1_vs_time_stacked_by_start.pdf")
+plt.savefig("pc1_vs_time_stacked_by_start.eps")
+plt.savefig("pc1_vs_time_stacked_by_start.png")
 plt.close()
             
 
