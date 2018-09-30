@@ -350,3 +350,602 @@ gauss1_coef = np.mean(vec_coef1, axis=0)
 gauss1_ic = np.mean(vec_ic1, axis=0)
 gauss2_coef = np.mean(vec_coef2, axis=0)
 gauss2_ic = np.mean(vec_ic2, axis=0)
+
+def draw_vector(v0, v1, ax=None, description = ''):
+    ax = ax or plt.gca()
+    arrowprops=dict(arrowstyle='->',
+                    linewidth=2,
+                    shrinkA=0, shrinkB=0)
+    ax.annotate(description, v1, v0, arrowprops=arrowprops)
+
+times = CC_df.loc[:, ['Time']].values
+
+#fit GMM
+gmm = GMM(n_components=2).fit(PC_matrix)
+cov = gmm.covariances_
+prob_distr = gmm.predict_proba(PC_matrix)
+
+# determine to which of the two gaussians each data point belongs by looking at probability distribution 
+gauss1_idx = [i for i in range(len(prob_distr)) if prob_distr[i][0] >= prob_distr[i][1]]
+gauss2_idx = [j for j in range(len(prob_distr)) if prob_distr[j][1] >= prob_distr[j][0]]
+
+gauss1_time = [times[i] for i in gauss1_idx] # time for the first gaussian data
+gauss2_time = [times[j] for j in gauss2_idx] # time for the second gaussian data
+
+gauss1_pc1 = [PC_matrix[:,0][i] for i in gauss1_idx] # first pc values for the first gaussian
+gauss2_pc1 = [PC_matrix[:,0][j] for j in gauss2_idx] # first pc values for the second gaussian
+
+gauss1_pc2 = [PC_matrix[:,1][i] for i in gauss1_idx]
+gauss2_pc2 = [PC_matrix[:,1][j] for j in gauss2_idx]
+
+plt.scatter(gauss1_pc1, gauss1_pc2, s=3, c='b')
+plt.scatter(gauss2_pc1, gauss2_pc2, s=3, c='r')
+
+# X, Y = data[:, 0], data[:, 1]
+
+# plt.scatter(X, Y, s=3)
+# plt.title('scatter plot for two principal component values using all 20 imputed sets')
+plt.xlabel('First PC')
+plt.ylabel('Second PC')
+
+gauss1_t = sorted(gauss1_time)
+gauss2_t = sorted(gauss2_time)
+ic1 = np.asarray([gauss1_ic]).T
+ic2 = np.asarray([gauss2_ic]).T
+
+def line_vec(time, coef, intercept):
+    return [(coef*i+intercept) for i in time]
+
+gauss1 = line_vec(gauss1_t, gauss1_coef, ic1)
+gauss2 = line_vec(gauss2_t, gauss2_coef, ic2)
+
+gauss1_x= [i for i,j in gauss1 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+gauss1_y= [j for i,j in gauss1 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+gauss2_x= [i for i,j in gauss2 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+gauss2_y= [j for i,j in gauss2 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+
+plt.savefig('two_pc.png', transparent=True)
+v0 = np.asarray([gauss1_x[0], gauss1_y[0]]); v1 = np.asarray([gauss1_x[-1], gauss1_y[-1]])
+draw_vector(v0, v1)
+v0 = np.asarray([gauss2_x[0], gauss2_y[0]]); v1 = np.asarray([gauss2_x[-1], gauss2_y[-1]])
+draw_vector(v0, v1)
+plt.savefig('dynamics.png', transparent=True)
+#plt.show()
+plt.close()
+
+plt.scatter(gauss1_pc1, gauss1_pc2, s=3, c='b')
+plt.scatter(gauss2_pc1, gauss2_pc2, s=3, c='r')
+
+# X, Y = data[:, 0], data[:, 1]
+
+# plt.scatter(X, Y, s=3)
+# plt.title('scatter plot for two principal component values using all 20 imputed sets')
+plt.xlabel('First PC')
+plt.ylabel('Second PC')
+
+gauss1_t = sorted(gauss1_time)
+gauss2_t = sorted(gauss2_time)
+ic1 = np.asarray([gauss1_ic]).T
+ic2 = np.asarray([gauss2_ic]).T
+
+#def line_vec(time, coef, intercept):
+#    return [(coef*i+intercept) for i in time]
+
+gauss1 = line_vec(gauss1_t, gauss1_coef, ic1)
+gauss2 = line_vec(gauss2_t, gauss2_coef, ic2)
+
+gauss1_x= [i for i,j in gauss1 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+gauss1_y= [j for i,j in gauss1 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+gauss2_x= [i for i,j in gauss2 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+gauss2_y= [j for i,j in gauss2 if (i<=4 and i>=-6) and (j>=-3 and j<=3)]
+
+plt.savefig('two_pc.png', transparent=True)
+v0 = np.asarray([gauss1_x[0], gauss1_y[0]]); v1 = np.asarray([gauss1_x[-1], gauss1_y[-1]])
+draw_vector(v0, v1)
+v0 = np.asarray([gauss2_x[0], gauss2_y[0]]); v1 = np.asarray([gauss2_x[-1], gauss2_y[-1]])
+draw_vector(v0, v1)
+plt.savefig('dynamics.png', transparent=True)
+#plt.show()
+plt.close()
+
+# flow vectors for each NGAs
+nga_dict = {key:list() for key in NGAs}
+vec_coef1 = list() # coefficients for overall flow vectors for each ngas in the first gaussian
+vec_ic1 = list() # intercept for overall flow vectors for each ngas in the first gaussian
+vec_coef2 = list() # coefficients for overall flow vectors for each ngas in the second gaussian
+vec_ic2 = list() # intercept for overall flow vectors for each ngas in the second gaussian
+
+for idx in range(len(PC_matrix)):
+    nga = CC_df.loc[idx].NGA
+    nga_dict[nga].append((PC_matrix[:,0][idx], PC_matrix[:,1][idx], times[idx][0], idx))            
+
+for i in range(len(NGAs)):  # flow vector for each NGA
+
+    nga_pc1 = [p for p,_,_,_ in nga_dict[NGAs[i]]] 
+    nga_pc2 = [j for _,j,_,_ in nga_dict[NGAs[i]]]
+    nga_time = [k for _,_,k,_ in nga_dict[NGAs[i]]]
+
+    nga_pc1 = [x for _,x,_ in sorted(zip(nga_time, nga_pc1, nga_pc2))]
+    nga_pc2 = [y for _,_,y in sorted(zip(nga_time, nga_pc1, nga_pc2))]
+
+    nga_pc_gauss1 = [[p,j] for p,j,_,t in nga_dict[NGAs[i]] if t in gauss1_idx]
+    nga_pc_gauss2 = [[p,j] for p,j,_,t in nga_dict[NGAs[i]] if t in gauss2_idx]
+
+    nga_time1 = np.asarray([k for _,_,k,t in nga_dict[NGAs[i]] if t in gauss1_idx])
+    nga_time2 = np.asarray([k for _,_,k,t in nga_dict[NGAs[i]] if t in gauss2_idx])
+
+    xfit1 = np.linspace(-6, 4, len(nga_time1))
+    xfit2 = np.linspace(-6, 4, len(nga_time2))
+
+    assert len(nga_pc_gauss1) == len(nga_time1)
+    assert len(nga_pc_gauss2) == len(nga_time2)
+    
+    #fit linear regression 
+    if len(nga_time1) == 0:
+        ols2 = linear_model.LinearRegression()
+        model2 = ols2.fit(nga_time2.reshape(-1,1), nga_pc_gauss2)
+                
+        vec_coef2.append(model2.coef_)
+        vec_ic2.append(model2.intercept_)
+                
+    elif len(nga_time2) == 0:
+        ols1 = linear_model.LinearRegression()
+        model1 = ols1.fit(nga_time1.reshape(-1,1), nga_pc_gauss1)
+        
+        vec_coef1.append(model1.coef_)
+        vec_ic1.append(model1.intercept_)
+
+    else:
+        ols1 = linear_model.LinearRegression()
+        model1 = ols1.fit(nga_time1.reshape(-1,1), nga_pc_gauss1)
+        ols2 = linear_model.LinearRegression()
+        model2 = ols2.fit(nga_time2.reshape(-1,1), nga_pc_gauss2)
+        
+        vec_coef1.append(model1.coef_)
+        vec_ic1.append(model1.intercept_)
+        vec_coef2.append(model2.coef_)
+        vec_ic2.append(model2.intercept_)
+
+gauss1_coef = np.mean(vec_coef1, axis=0)
+gauss1_ic = np.mean(vec_ic1, axis=0)
+gauss2_coef = np.mean(vec_coef2, axis=0)
+gauss2_ic = np.mean(vec_ic2, axis=0)
+
+# slope and intercept of the average flow vector for each cluster
+slope1 = gauss1_coef[1]/gauss1_coef[0]
+slope2 = gauss2_coef[1]/gauss2_coef[0]
+intercept1 = gauss1_ic[1] - ((slope1) * gauss1_ic[0])
+intercept2 = gauss2_ic[1] - ((slope2) * gauss2_ic[0])
+
+print(slope1); print(slope2)
+print(intercept1); print(intercept2)
+plt.scatter(gauss1_pc1, gauss1_pc2, s=3, c='b')
+plt.scatter(gauss2_pc1, gauss2_pc2, s=3, c='r')
+
+# plot flow vectors 
+def line_vec2(xlinspace, slope, intercept):
+    return [(i, slope*i+intercept) for i in xlinspace]
+
+gauss1 = line_vec2(np.linspace(-6, 0), slope1, intercept1)
+gauss2 = line_vec2(np.linspace(-1, 4), slope2, intercept2)
+
+gauss1_x, gauss1_y = zip(*gauss1)
+gauss2_x, gauss2_y = zip(*gauss2)
+
+v0 = np.asarray([gauss1_x[0], gauss1_y[0]]); v1 = np.asarray([gauss1_x[-1], gauss1_y[-1]])
+draw_vector(v0, v1)
+v0 = np.asarray([gauss2_x[0], gauss2_y[0]]); v1 = np.asarray([gauss2_x[-1], gauss2_y[-1]])
+draw_vector(v0, v1)
+
+
+plt.xlabel('First PC')
+plt.ylabel('Second PC')
+#plt.show()
+plt.close()
+
+# llinear discriminant analysis 
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+clf = LinearDiscriminantAnalysis(n_components = 9)
+
+gmm = GMM(n_components=2).fit(CC_scaled)
+cov = gmm.covariances_
+prob_distr = gmm.predict_proba(CC_scaled)
+gauss_idx = [1 if prob_distr[i][0] >= prob_distr[i][1] else 0 for i in range(len(prob_distr))]
+
+clf.fit(CC_scaled, gauss_idx)
+print(clf.coef_)
+print(clf.intercept_)
+
+
+
+# what contributes to the angle 
+# MHP: Where does y come from on the next line?
+y = [0.06630305, 0.0248204, 0.08419158, 0.2790867, 0.01331484, 0.08750921, 0.01332944, 0.07048244, 0.25338994]
+y = [i/sum(y) * 100 for i in y]
+assert sum(y) == 100
+x = range(1, 10)
+
+num_bins = 9
+
+plt.plot(x, y)
+plt.xlabel('Principal Components')
+plt.ylabel('Contribution to the angle in percentages')
+plt.savefig('angle plot', transparent=True)
+#plt.show()
+plt.close()
+
+print(np.corrcoef(CC_scaled, rowvar = False)) # all the variables are highly correlated
+
+# flow vectors between the two clusters 
+
+# Per Python scoping, variables inside the following function are found in the global environment
+# Maybe we should make these variables inputs to the function?
+def flowvec_inbetween():
+    #Gaussian Mixture Model 
+    #fit GMM
+    gmm = GMM(n_components=2).fit(PC_matrix)
+    cov = gmm.covariances_
+    prob_distr = gmm.predict_proba(PC_matrix)
+    
+    
+    # determine to which of the two gaussians each data point belongs by looking at probability distribution 
+    gauss_idx1 = [i for i in range(len(prob_distr)) if prob_distr[i][0] <= 0.9]
+    gauss_idx2 = [i for i in range(len(prob_distr)) if prob_distr[i][1] <= 0.9]
+    print(len(gauss_idx1))
+    print(len(gauss_idx2))
+    print(len(list(set(gauss_idx1) & set(gauss_idx2))))
+    
+    print(len([i for i in prob_distr if i[0] < i[1]]))
+    
+    # flow vectors for each NGAs
+    nga_dict = {key:list() for key in NGAs}
+    vec_coef = list() # coefficients for overall flow vectors for each ngas between the two gaussian
+    vec_ic = list() # intercept for overall flow vectors for each ngas between the two gaussian
+
+    for idx in range(len(PC_matrix)):
+        nga = CC_df.loc[idx].NGA
+        nga_dict[nga].append((PC_matrix[:,0][idx], PC_matrix[:,1][idx], times[idx][0], idx))            
+
+    for i in range(len(NGAs)):  # flow vector for each NGA
+
+        nga_pc = [[p,j] for p,j,_,t in nga_dict[NGAs[i]] if t in gauss_idx]
+        nga_time = np.asarray([k for _,_,k,t in nga_dict[NGAs[i]] if t in gauss_idx])
+
+
+        #fit linear regression 
+        if len(nga_pc) != 0:
+            ols = linear_model.LinearRegression()
+            model = ols.fit(nga_time.reshape(-1,1), nga_pc)
+
+            vec_coef.append(model.coef_)
+            vec_ic.append(model.intercept_)
+    
+    return vec_coef, vec_ic
+
+def calc_slope(vec_coef, vec_ic):
+    # slope and intercept of the average flow vector for each cluster
+    np.seterr(divide='ignore', invalid='ignore')
+    
+    gauss_coef = np.mean(vec_coef, axis=0)
+    gauss_ic = np.mean(vec_ic, axis=0)
+
+    slope = gauss_coef[1]/gauss_coef[0]
+    intercept = gauss_ic[1] - ((slope) * gauss_ic[0])
+    
+    return slope[0], intercept[0]
+
+# plt.scatter(gauss1_pc1, gauss1_pc2, s=3, c='b')
+# plt.scatter(gauss2_pc1, gauss2_pc2, s=3, c='r')
+
+# # plot flow vectors 
+# def line_vec(xlinspace, slope, intercept):
+#     return [(i, slope*i+intercept) for i in xlinspace]
+
+# gauss = line_vec(np.linspace(-3, 2), slope, intercept)
+
+# gauss1_x, gauss1_y = zip(*gauss1)
+# gauss2_x, gauss2_y = zip(*gauss2)
+
+# v0 = np.asarray([gauss1_x[0], gauss1_y[0]]); v1 = np.asarray([gauss1_x[-1], gauss1_y[-1]])
+# draw_vector(v0, v1)
+# v0 = np.asarray([gauss2_x[0], gauss2_y[0]]); v1 = np.asarray([gauss2_x[-1], gauss2_y[-1]])
+# draw_vector(v0, v1)
+
+
+# plt.xlabel('First PC')
+# plt.ylabel('Second PC')
+# plt.show()
+# plt.close()
+
+# resampling from flow vector of each NGAs 
+
+#pt = turchin.progress_timer(n_iter = 5000, description = 'average flow vector bootstrapping on NGAs')
+
+# flow vectors for each NGAs
+vec_coef, vec_ic = flowvec_inbetween()
+orig_slope, orig_ic = calc_slope(vec_coef, vec_ic)
+
+def bstr_nga_flow(vec_coef, vec_ic, n=5000):
+    """
+    Resample from the flow vector of each nga with respect to each clusters
+    """
+    slopes = []
+    intercepts = []
+    
+    vec_coef = np.asarray(vec_coef)
+    vec_ic = np.asarray(vec_ic) 
+    
+    for i in range(n):
+        
+        #resample
+        resample = np.random.randint(0, len(vec_coef), size = len(vec_coef))
+        resampled_coef = vec_coef[resample]
+        resampled_ic = vec_ic[resample]
+        
+        # find the average flow vector for each cluster
+        slope, ic = calc_slope(resampled_coef, resampled_ic)
+        
+        if not np.isnan(slope):
+            slopes.append(slope)
+            intercepts.append(ic)
+        
+        #pt.update()
+        
+    return slopes, intercepts 
+
+slopes, intercepts = bstr_nga_flow(vec_coef, vec_ic)
+#pt.finish()
+
+# plot the histogram 
+num_bins = 100
+
+print(len(slopes))
+# average flow vector for the first Gaussian after bootstrapping
+n, bins, patches = plt.hist(slopes, num_bins, facecolor='blue', alpha=0.5)
+plt.title('average slope of the flow vector between the two clusters')
+plt.axvline(x=orig_slope, c= 'Black')
+plt.xlabel('slope')
+plt.ylabel('number of occurences')
+#plt.show()
+plt.close()
+
+# average flow vector for the second Gaussian after bootstrapping 
+n, bins, patches = plt.hist(intercepts, num_bins, facecolor='blue', alpha=0.5)
+plt.title('average intercept of the flow vector between the two clusters')
+plt.axvline(x=orig_ic, c='Black')
+plt.xlabel('intercept')
+plt.ylabel('number of occurences')
+#plt.show()
+plt.close()
+
+# find the data points within each NGA where each point has less than 90% of belonging to either of the clusters 
+
+def flowvec_points(threshold):
+    """
+    Return the data points within each NGA where each point has less than 90% of belonging to either of the clusters
+    """
+    gmm = GMM(n_components=2).fit(PC_matrix)
+    cov = gmm.covariances_
+    prob_distr = gmm.predict_proba(PC_matrix)
+    
+    # determine to which of the two gaussians each data point belongs by looking at probability distribution 
+    gauss_idx = [i for i in range(len(prob_distr)) 
+                  if (prob_distr[i][0] <= threshold and prob_distr[i][1] <= threshold)]
+    return gauss_idx
+
+# flowvec_points(0.9)
+
+
+idx_len = []
+range_val = []
+threshold = '0.9'
+
+for i in range(100):
+    thres = float(threshold)
+    idx = flowvec_points(thres)
+        
+    idx_len.append(len(idx))
+    range_val.append(thres)
+    
+    if len(idx) == 8280:
+        break
+
+    threshold += '9'
+    
+from math import *
+
+plt.plot(range(len(range_val)), idx_len)
+plt.xlabel('number of digits for threshold')
+plt.ylabel('number of points included')
+#plt.show()
+plt.close()
+
+plt.plot([i*100 for i in range_val], idx_len)
+plt.xlabel('percentage of threshold')
+plt.ylabel('number of points included')
+#plt.show()
+plt.close()
+
+# find the transition point for each NGAs 
+
+# Best to use a unique name for the function since gauss_idx is a variable above
+def gauss_idx_func(CC_scaled):
+    """
+    Label each point by which of the two Gaussians it has higher probability of belonging to
+    """
+    #Gaussian Mixture Model 
+    #fit GMM
+    gmm = GMM(n_components=2).fit(CC_scaled)
+    cov = gmm.covariances_
+    prob_distr = gmm.predict_proba(CC_scaled)
+
+    # determine to which of the two gaussians each data point belongs by looking at probability distribution 
+    if gmm.weights_[0] < gmm.weights_[1]:
+        gauss1_idx = [i for i in range(len(prob_distr)) if prob_distr[i][0] >= prob_distr[i][1]]
+        gauss2_idx = [j for j in range(len(prob_distr)) if prob_distr[j][1] >= prob_distr[j][0]]
+    else:
+        gauss1_idx = [i for i in range(len(prob_distr)) if prob_distr[i][0] <= prob_distr[i][1]]
+        gauss2_idx = [j for j in range(len(prob_distr)) if prob_distr[j][1] <= prob_distr[j][0]]
+        
+    return gauss1_idx, gauss2_idx 
+
+def rand_impute(orig_dataframe):
+    """
+    Given a set of 20 imputed sets combined, randomly sample to construct 1 set of data points for each polity/time
+    """
+    
+    resample = [np.random.randint(0, 20) * 414 + i for i in range(414)]
+    resampled_df = orig_dataframe.loc[resample]
+    
+    return resampled_df    
+    
+def between_vec(df, switch):
+    """
+    Flow vectors between the two clusters for each NGA
+    """    
+    gauss1_idx, gauss2_idx = gauss_idx_func(CC_scaled)
+    nga_dict = {key:list() for key in NGAs}
+    
+    slopes = [] 
+    
+    def slope(a, b):
+        """ find slope given two points """
+        a1, a2 = PC_matrix[:, 0][a], PC_matrix[:, 1][a]
+        b1, b2 = PC_matrix[:, 0][b], PC_matrix[:, 1][b]
+        
+        return b1-a1, b2-a2
+    
+    # compute flow vector for each nga 
+    for nga in NGAs:
+        nga_idx = df.index[df['NGA'] == nga].tolist()
+
+        gauss1 = [i for i in nga_idx if i in gauss1_idx]
+        gauss2 = [j for j in nga_idx if j in gauss2_idx]
+
+        # use the last point in the first cluster and the first point in the second cluster
+        if switch == 1: 
+            
+            try:
+                a, b = gauss1[-1], gauss2[0]
+                x, y = slope(a, b)
+                slopes.append((x, y))
+
+            except: # lies only in one of the two clusters 
+                pass 
+        
+        # use the very first time points make a transition from the first to the second
+        elif switch == 2:
+            
+            for idx in range(len(nga_idx)-1):
+                
+                if nga_idx[idx] in gauss1 and nga_idx[idx+1] in gauss2:
+                    
+                    a, b = nga_idx[idx], nga_idx[idx+1]
+                    x, y = slope(a, b)
+                    slopes.append((x, y))
+                    
+                    break 
+        
+        # take all transitions
+        elif switch == 3:
+            
+            for idx in range(len(nga_idx)-1):
+                
+                if nga_idx[idx] in gauss1 and nga_idx[idx+1] in gauss2:
+                    
+                    a, b = nga_idx[idx], nga_idx[idx+1]
+                    x, y = slope(a, b)
+                    slopes.append((x, y))
+        
+    return slopes 
+
+from math import * 
+
+def std(mean, vals):
+    """
+    Compute the standard deviation given the mean and a list of values
+    """
+    return sqrt(sum([(i-mean)**2 for i in vals])/len(vals))
+
+
+df = rand_impute(CC_df)
+
+for i in [1, 2, 3]:
+    slopes = between_vec(df, i)
+
+    x_coor = [i for i, _ in slopes]
+    y_coor = [j for _, j in slopes]
+    mean_x = sum(x_coor)/len(x_coor)
+    mean_y = sum(y_coor)/len(y_coor)
+    
+    std_x = std(mean_x, x_coor)/sqrt(len(x_coor)-1)
+    std_y = std(mean_y, y_coor)/sqrt(len(y_coor)-1)
+
+    print("mean", mean_x, mean_y)
+    print("errors", std_x, std_y)
+    print("first component error bar start", mean_x-std_x, "error bar end", mean_x+std_x)
+    print("second component error bar start", mean_y-std_y, "error bar end", mean_y+std_y)
+    print("\n\n")
+
+ # from functools import reduce
+
+# avg_slope_ = np.average(np.asarray(slopes))
+# print(avg_slope_)
+# simple bootstrap 
+# pt = turchin.progress_timer(n_iter = 5000, description = 'average slope for flow vectors inbetween')
+
+def bstr(slopes, n=5000):
+    """
+    Given data matrix, perform bootstrapping by collecting n samples (default = 5000) and return the 
+    error rate for the mean of the data. Assume that the given data matrix is numpy array
+    """            
+    resample_avg = list() # resampling of avg of the slopes 
+    
+    for i in range(n):
+        
+        resample = np.random.randint(0, len(slopes), size=len(slopes))
+        resampled = PC_matrix[resample]
+        resample_avg.append(np.average(resampled))
+        
+        pt.update()
+        
+    return resample_avg 
+
+# avg_slope = bstr(slopes)
+# pt.finish()
+
+# # plot the histogram for eigenvalues and angles
+# num_bins = 200
+# # angle between PC and the first component
+# n, bins, patches = plt.hist(avg_slope, num_bins, facecolor='blue', alpha=0.5)
+# plt.title('average slope of the flow vector between two clusters')
+# plt.axvline(x=avg_slope_)
+# plt.show()
+# plt.close()
+
+    
+#     # flow vectors for each NGAs
+#     nga_dict = {key:list() for key in ngas}
+#     vec_coef = list() # coefficients for overall flow vectors for each ngas between the two gaussian
+#     vec_ic = list() # intercept for overall flow vectors for each ngas between the two gaussian
+
+#     for idx in range(len(data)):
+#         nga = pnas_data1.loc[idx].NGA
+#         nga_dict[nga].append((data[:,0][idx], data[:,1][idx], times[idx][0], idx))            
+
+#     for i in range(len(ngas)):  # flow vector for each NGA
+
+#         nga_pc = [[p,j] for p,j,_,t in nga_dict[ngas[i]] if t in gauss_idx]
+#         nga_time = np.asarray([k for _,_,k,t in nga_dict[ngas[i]] if t in gauss_idx])
+
+#         #fit linear regression 
+#         if len(nga_pc) != 0:
+#             ols = linear_model.LinearRegression()
+#             model = ols.fit(nga_time.reshape(-1,1), nga_pc)
+
+#             vec_coef.append(model.coef_)
+#             vec_ic.append(model.intercept_)
+    
+#     return vec_coef, vec_ic
