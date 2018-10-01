@@ -106,6 +106,7 @@ for i,reg in enumerate(worldRegions):
         axes[m,n].set_xlabel("Calendar Date [AD]")
     if n == 0:
         axes[m,n].set_ylabel("PC1")
+
 f.subplots_adjust(hspace=.5)
 plt.savefig("pc1_vs_time_stacked_by_region.pdf")
 plt.savefig("pc1_vs_time_stacked_by_region.eps")
@@ -133,6 +134,7 @@ for i,start in enumerate(allStarts):
             pc1.append(np.mean(PC_matrix[ind,0]))
         axes[i].scatter(times,pc1,s=10)
     axes[i].set_title(startString[i],fontsize=10)
+
 plt.savefig("pc1_vs_time_stacked_by_start.pdf")
 plt.savefig("pc1_vs_time_stacked_by_start.eps")
 plt.savefig("pc1_vs_time_stacked_by_start.png")
@@ -272,84 +274,68 @@ for idx in range(len(PC_matrix)):
     nga_dict[nga].append((PC_matrix[:,0][idx], PC_matrix[:,1][idx], CC_times[idx][0], idx))            
 
 for i in range(len(NGAs)):  # flow vector for each NGA
-
     nga_pc1 = [p for p,_,_,_ in nga_dict[NGAs[i]]] 
     nga_pc2 = [j for _,j,_,_ in nga_dict[NGAs[i]]]
     nga_time = [k for _,_,k,_ in nga_dict[NGAs[i]]]
-
     nga_pc1 = [x for _,x,_ in sorted(zip(nga_time, nga_pc1, nga_pc2))]
     nga_pc2 = [y for _,_,y in sorted(zip(nga_time, nga_pc1, nga_pc2))]
-
     nga_pc_gauss1 = [[p,j] for p,j,_,t in nga_dict[NGAs[i]] if t in gauss1_idx]
     nga_pc_gauss2 = [[p,j] for p,j,_,t in nga_dict[NGAs[i]] if t in gauss2_idx]
-
     nga_time1 = np.asarray([k for _,_,k,t in nga_dict[NGAs[i]] if t in gauss1_idx])
     nga_time2 = np.asarray([k for _,_,k,t in nga_dict[NGAs[i]] if t in gauss2_idx])
-
     xfit1 = np.linspace(-6, 4, len(nga_time1))
     xfit2 = np.linspace(-6, 4, len(nga_time2))
-
     assert len(nga_pc_gauss1) == len(nga_time1)
     assert len(nga_pc_gauss2) == len(nga_time2)
-    
-    #fit linear regression 
-    if len(nga_time1) == 0:
+    if len(nga_time1) == 0: #fit linear regression 
         ols2 = linear_model.LinearRegression()
         model2 = ols2.fit(nga_time2.reshape(-1,1), nga_pc_gauss2)
-                
         vec_coef2.append(model2.coef_)
         vec_ic2.append(model2.intercept_)
-        
         yfit2 = model2.predict(np.sort(nga_time2).reshape(-1, 1))
         #plt.plot([p for p, _ in yfit2], [q for _, q in yfit2])
-        
         vec_coef2.append(model2.coef_)
         vec_ic2.append(model2.intercept_)
-        
     elif len(nga_time2) == 0:
         ols1 = linear_model.LinearRegression()
         model1 = ols1.fit(nga_time1.reshape(-1,1), nga_pc_gauss1)
-        
         vec_coef1.append(model1.coef_)
         vec_ic1.append(model1.intercept_)
-        
         yfit1 = model1.predict(np.sort(nga_time1).reshape(-1, 1))
-
         #plt.plot([p for p, _ in yfit1], [q for _, q in yfit1])
-        
         vec_coef1.append(model1.coef_)
         vec_ic1.append(model1.intercept_)
-
     else:
         ols1 = linear_model.LinearRegression()
         model1 = ols1.fit(nga_time1.reshape(-1,1), nga_pc_gauss1)
         ols2 = linear_model.LinearRegression()
         model2 = ols2.fit(nga_time2.reshape(-1,1), nga_pc_gauss2)
-        
         vec_coef1.append(model1.coef_)
         vec_ic1.append(model1.intercept_)
         vec_coef2.append(model2.coef_)
         vec_ic2.append(model2.intercept_)
-
         yfit1 = model1.predict(np.sort(nga_time1).reshape(-1, 1))
         yfit2 = model2.predict(np.sort(nga_time2).reshape(-1, 1))
-        
         #plt.plot([p for p, _ in yfit1], [q for _, q in yfit1])
         #plt.plot([p for p, _ in yfit2], [q for _, q in yfit2])
-
         vec_coef1.append(model1.coef_)
         vec_ic1.append(model1.intercept_)
         vec_coef2.append(model2.coef_)
         vec_ic2.append(model2.intercept_)
-
     #plt.scatter(nga_pc1, nga_pc2, s=9, c=range(len(nga_pc1)), cmap = 'Blues')
     #plt.show()
     #plt.close()
-    
+
 gauss1_coef = np.mean(vec_coef1, axis=0)
 gauss1_ic = np.mean(vec_ic1, axis=0)
 gauss2_coef = np.mean(vec_coef2, axis=0)
 gauss2_ic = np.mean(vec_ic2, axis=0)
+
+print('Mean value of slope (across NGAs). PC/year')
+print('Gaussian 1')
+print(gauss1_coef)
+print('Gaussian 2')
+print(gauss2_coef)
 
 def draw_vector(v0, v1, ax=None, description = ''):
     ax = ax or plt.gca()
