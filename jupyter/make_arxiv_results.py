@@ -1,7 +1,7 @@
+import time
 import pandas as pd 
 import numpy as np
 from matplotlib import pyplot as plt, cm as cm, mlab as mlab
-import matplotlib
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns; sns.set()
 from sklearn.mixture import GaussianMixture as GMM
@@ -13,6 +13,7 @@ from sklearn.preprocessing import StandardScaler, normalize
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn.decomposition import PCA, FastICA
 from sklearn import linear_model
+import cv2
 
 # read csv/excel data files 
 CC_file = os.path.abspath(os.path.join("./..","data","pnas_data1.csv")) #20 imputed sets
@@ -139,6 +140,105 @@ plt.savefig("pc1_vs_time_stacked_by_start.pdf")
 plt.savefig("pc1_vs_time_stacked_by_start.eps")
 plt.savefig("pc1_vs_time_stacked_by_start.png")
 plt.close()
+
+# Visualize the 2D (PC1-PC2) dynamics with scatter plots and vectors normalized
+# by the time rate of change between points.
+import matplotlib.cm as cm
+#colors = cm.rainbow(np.linspace(0, 1, len(NGAs)))
+colors = cm.tab20c(np.linspace(0, 1, len(NGAs)))
+for nn,nga in enumerate(NGAs):
+    indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
+    times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
+    pc1 = list()
+    pc2 = list()
+    for t in times:
+        ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
+        pc1.append(np.mean(PC_matrix[ind,0]))
+        pc2.append(np.mean(PC_matrix[ind,1]))
+    dpc1 = np.diff(pc1)        
+    dpc2 = np.diff(pc2)        
+    dt = np.diff(times)
+    dpcMag = np.sqrt(np.power(dpc1,2) + np.power(dpc2,2))
+    flowMag = dpcMag / dt
+    maxFlow = np.max(flowMag)
+    for p in range(len(flowMag)):
+        u = dpc1[p]
+        v = dpc2[p]
+        d = np.sqrt(u*u + v*v)
+        u = flowMag[p] * u / d / maxFlow
+        v = flowMag[p] * v / d / maxFlow
+        plt.arrow(pc1[p],pc2[p],u,v,color=colors[nn],width=.01)
+        
+    #plt.plot(pc1,pc2)
+    #plt.scatter(pc1,pc2,s=10)
+
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor=colors[nn],label=NGAs[nn]) for nn in range(len(NGAs))]
+
+plt.xlim(-7,7)
+plt.ylim(-7,7)
+
+
+plt.savefig("flow_visualization.pdf")
+plt.savefig("flow_visualization.eps")
+plt.savefig("flow_visualization.png")
+plt.close()
+
+
+fig = plt.figure(figsize=(3,7))
+fig.legend(handles=legend_elements)
+plt.savefig("color_legend.pdf")
+plt.close()
+
+# Visualize the 2D (PC1-PC2) dynamics with a movie
+movieTimes = np.arange(-9600,1901,100)
+# First, create and store pc1,pc2, and time vectors for each NGA
+dynamicsDict = dict()
+for nga in NGAs:
+    indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
+    times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
+    pc1 = list()
+    pc2 = list()
+    for t in times:
+        ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
+        pc1.append(np.mean(PC_matrix[ind,0]))
+        pc2.append(np.mean(PC_matrix[ind,1]))
+    dynamicsDict[nga] = (pc1,pc2,times)
+
+for i,t in enumerate(movieTimes):
+    for nn,nga in enumerate(NGAs):
+        pc1,pc2,times = dynamicsDict[nga]
+        if t >= min(times):
+            x = np.interp(t,times,pc1)
+            y = np.interp(t,times,pc2)
+            plt.scatter(x,y,color=colors[nn],s=10)
+    plt.xlim(-7,7)
+    plt.ylim(-7,7)
+    f = os.path.abspath(os.path.join("./","img/",) + str(i) + ".png")
+    plt.title(str(t))
+    plt.savefig(f)
+    plt.clf()
+
+plt.close()
+
+## cv2 movie generation works poorly in Ubuntu. Do this externally
+### Now turn those images into a movie
+#frame0 = cv2.imread(os.path.join("./img/",str(0)+".png"))
+#height, width, layers = frame0.shape
+#
+#videoPath = os.path.abspath(os.path.join("./img/","movie.avi"))
+#print(videoPath)
+#fourcc = cv2.VideoWriter_fourcc('X','V','I','D')
+#video = cv2.VideoWriter(videoPath, fourcc,20,(width,height))
+#
+#for i,t in enumerate(movieTimes):
+#    imgPath = os.path.join("./img/" + str(i) + ".png")
+#    img = cv2.imread(imgPath)
+#    img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+#    video.write(img)
+#print('done')
+#cv2.destroyAllWindows()
+#video.release()
 
 #Gaussian Mixture Model 
 #fit GMM
