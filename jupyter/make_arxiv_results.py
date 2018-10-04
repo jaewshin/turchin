@@ -14,13 +14,29 @@ from sklearn.mixture import GaussianMixture as GMM
 from sklearn.decomposition import PCA, FastICA
 from sklearn import linear_model
 import cv2
+import scipy.spatial as spatial
 
 # read csv/excel data files 
 CC_file = os.path.abspath(os.path.join("./..","data","pnas_data1.csv")) #20 imputed sets
 PC1_file = os.path.abspath(os.path.join("./..","data","pnas_data2.csv")) #Turchin's PC1s
-
+polity_file = os.path.abspath(os.path.join("./..","data","scraped_seshat.csv")) #Info on polities spans and gaps
 CC_df = pd.read_csv(CC_file) # A pandas dataframe
 PC1_df = pd.read_csv(PC1_file) # A pandas dataframe
+polity_df = pd.read_csv(polity_file) # A pandas dataframe
+
+# Find gaps
+def parseDate(s):
+    # 908BCE
+    # 102CE
+    if s.endswith('BCE'):
+        return -float(s[0:-3])
+    else:
+        return float(s[0:-2])
+
+gapList = [(row["NGA"],parseDate(row["Start Period"]),parseDate(row["End Period"])) for index,row in polity_df.iterrows() if row["Polity"]=="Gap"]
+
+def isInGap(year0,nga0,gapList):
+    return any([True if (nga==nga0 and year0 >= start and year0 < end) else False for nga,start,end in gapList])
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -190,6 +206,24 @@ fig.legend(handles=legend_elements)
 plt.savefig("color_legend.pdf")
 plt.close()
 
+
+# Extract the movement vectors at 100 year intervals, accounting for possible
+# gaps. Linear interpolation is done between observations. In particular, the
+# following vectors are created:
+#
+# u         Origin of vector along PC1
+# v         Origin of vector along PC2
+# du        Change along PC1
+# dv        Change along PC2
+# ngaFlow   NGA of the point (for display purposes)
+u = np.empty(shape=(0,1))
+v = np.empty(shape=(0,1))
+du = np.empty(shape=(0,1))
+dv = np.empty(shape=(0,1))
+ngaFlow = list()
+
+timesFlow = np.arange(-9600,1901,100) # Times at which to evaluate flow vectors
+# Create 
 # Visualize the 2D (PC1-PC2) dynamics with a movie
 movieTimes = np.arange(-9600,1901,100)
 # First, create and store pc1,pc2, and time vectors for each NGA
@@ -205,22 +239,75 @@ for nga in NGAs:
         pc2.append(np.mean(PC_matrix[ind,1]))
     dynamicsDict[nga] = (pc1,pc2,times)
 
-for i,t in enumerate(movieTimes):
+# Next, iterate over times to make make the movement vectors
+for i,t in enumerate(timesFlow):
     for nn,nga in enumerate(NGAs):
         pc1,pc2,times = dynamicsDict[nga]
-        if t >= min(times):
-            x = np.interp(t,times,pc1)
-            y = np.interp(t,times,pc2)
-            plt.scatter(x,y,color=colors[nn],s=10)
-    plt.xlim(-7,7)
-    plt.ylim(-7,7)
-    f = os.path.abspath(os.path.join("./","img/",) + str(i) + ".png")
-    plt.title(str(t))
-    plt.savefig(f)
-    plt.clf()
+        if t >= min(times) and t <= max(times): # Is the time in the NGAs range?
+            if not isInGap(t,nga,gapList): # Is this in a gap?
+                u = np.append(u,np.interp(t,times,pc1))
+                v = np.append(v,np.interp(t,times,pc2))
+                ngaFlow.append(nga)
+                # Don't calculate du and dv if this is the last point or a gap is net
+                if not t == max(times):
+                    if not isInGap(t+100,nga,gapList):
+                        du = np.append(du,np.interp(t+100,times,pc1) - np.interp(t,times,pc1))
+                        dv = np.append(dv,np.interp(t+100,times,pc2) - np.interp(t,times,pc2))
+                    else:
+                        du = np.append(du,np.nan)
+                        dv = np.append(dv,np.nan)
+                else:
+                    du = np.append(du,np.nan)
+                    dv = np.append(dv,np.nan)
 
+plt.figure(figsize=(10,10))
+plt.xlim(-7,7)
+plt.ylim(-7,7)
+for i in range(len(u)):
+    if not np.isnan(du[i]):
+        nn = [ind for ind,nga in enumerate(NGAs) if nga==ngaFlow[i]][0] 
+        plt.arrow(u[i],v[i],du[i],dv[i],width=.01,color=colors[nn])
+
+plt.savefig("flow2.pdf")
+plt.savefig("flow2.eps")
+plt.savefig("flow2.png")
 plt.close()
 
+# [Could be done faster by, e.g. inputing vectors u0/v0]
+def meanVector(u0,v0,r0,u,v,du,dv,minPoints=10):
+    # Remove endpoints
+    ind = [True if not np.isnan(du[i]) else False for i in range(len(du))]
+    u = u[ind]
+    v = v[ind]
+    du = du[ind]
+    dv = dv[ind]
+    points = np.column_stack((u,v))
+    point_tree = spatial.cKDTree(points)
+    neighb = point_tree.query_ball_point([u0,v0],r0)
+    if len(neighb) >= minPoints :
+        du0 = np.mean(du[neighb])
+        dv0 = np.mean(dv[neighb])
+        return [du0,dv0]
+    else:
+        return None
+
+print('Making gridded flow plot')
+print('This could be done more efficiently')
+r0 = .75
+plt.figure(figsize=(10,10))
+plt.xlim(-7,7)
+plt.ylim(-7,7)
+for u0 in np.arange(-7,7.1,.2):
+    for v0 in np.arange(-7,7.1,.2):
+        duv = meanVector(u0,v0,r0,u,v,du,dv)
+        if duv is not None:
+            plt.arrow(u0,v0,duv[0],duv[1],width=.01,color='blue')
+print('Done with flow plot')
+
+plt.savefig("flowgrid.pdf")
+plt.savefig("flowgrid.eps")
+plt.savefig("flowgrid.png")
+plt.close()
 ## cv2 movie generation works poorly in Ubuntu. Do this externally
 ### Now turn those images into a movie
 #frame0 = cv2.imread(os.path.join("./img/",str(0)+".png"))
