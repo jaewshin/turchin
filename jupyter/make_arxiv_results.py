@@ -287,27 +287,50 @@ def meanVector(u0,v0,r0,u,v,du,dv,minPoints=10):
     if len(neighb) >= minPoints :
         du0 = np.mean(du[neighb])
         dv0 = np.mean(dv[neighb])
-        return [du0,dv0]
+        mm0 = np.sqrt(np.sum(np.power(du[neighb] - du0,2) + np.power(dv[neighb]-dv0,2))/len(neighb))
+        return [du0,dv0,mm0]
     else:
         return None
 
 print('Making gridded flow plot')
 print('This could be done more efficiently')
 r0 = .75
+
+u0Vect = np.arange(-7,7.1,.2)
+v0Vect = np.arange(-7,7.1,.2)
+du0Mat = np.empty(shape=(len(u0Vect),len(v0Vect)))
+dv0Mat = np.empty(shape=(len(u0Vect),len(v0Vect)))
+mm0Mat = np.empty(shape=(len(u0Vect),len(v0Vect)))
+
+for ii,u0 in enumerate(u0Vect):
+    for jj,v0 in enumerate(v0Vect):
+        meanCalc = meanVector(u0,v0,r0,u,v,du,dv) # [du0, dv0, mm0]
+        if meanCalc is not None:
+            du0Mat[ii,jj] = meanCalc[0]
+            dv0Mat[ii,jj] = meanCalc[1]
+            mm0Mat[ii,jj] = meanCalc[2]
+        else:
+            du0Mat[ii,jj] = np.nan
+            dv0Mat[ii,jj] = np.nan
+            mm0Mat[ii,jj] = np.nan
+
 plt.figure(figsize=(10,10))
 plt.xlim(-7,7)
 plt.ylim(-7,7)
-for u0 in np.arange(-7,7.1,.2):
-    for v0 in np.arange(-7,7.1,.2):
-        duv = meanVector(u0,v0,r0,u,v,du,dv)
-        if duv is not None:
-            plt.arrow(u0,v0,duv[0],duv[1],width=.01,color='blue')
-print('Done with flow plot')
+colorMat = mm0Mat / np.nanmax(mm0Mat)
+for ii,u0 in enumerate(u0Vect):
+    for jj,v0 in enumerate(v0Vect):
+        if not np.isnan(du0Mat[ii,jj]):
+            #plt.arrow(u0,v0,du0Mat[ii,jj],dv0Mat[ii,jj],width=.01,color=str(colorMat[ii,jj]))
+            rgb = cm.inferno(colorMat[ii,jj])
+            plt.arrow(u0,v0,du0Mat[ii,jj],dv0Mat[ii,jj],width=.01,color=rgb)
+
 
 plt.savefig("flowgrid.pdf")
 plt.savefig("flowgrid.eps")
 plt.savefig("flowgrid.png")
 plt.close()
+print('Done with flow plot')
 ## cv2 movie generation works poorly in Ubuntu. Do this externally
 ### Now turn those images into a movie
 #frame0 = cv2.imread(os.path.join("./img/",str(0)+".png"))
