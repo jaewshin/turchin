@@ -215,12 +215,14 @@ plt.close()
 # v         Origin of vector along PC2
 # du        Change along PC1
 # dv        Change along PC2
-# ngaFlow   NGA of the point (for display purposes)
+# ngaFlow   NGA of the point
+# timeFlow  Time of the point
 u = np.empty(shape=(0,1))
 v = np.empty(shape=(0,1))
 du = np.empty(shape=(0,1))
 dv = np.empty(shape=(0,1))
 ngaFlow = list()
+timeFlow = np.empty(shape=(0,1))
 
 timesFlow = np.arange(-9600,1901,100) # Times at which to evaluate flow vectors
 # Create 
@@ -239,16 +241,17 @@ for nga in NGAs:
         pc2.append(np.mean(PC_matrix[ind,1]))
     dynamicsDict[nga] = (pc1,pc2,times)
 
-# Next, iterate over times to make make the movement vectors
-for i,t in enumerate(timesFlow):
-    for nn,nga in enumerate(NGAs):
-        pc1,pc2,times = dynamicsDict[nga]
+# Next, iterate over NGAs and times to make the movement vectors
+for nn,nga in enumerate(NGAs):
+    pc1,pc2,times = dynamicsDict[nga]
+    for i,t in enumerate(timesFlow):
         if t >= min(times) and t <= max(times): # Is the time in the NGAs range?
             if not isInGap(t,nga,gapList): # Is this in a gap?
                 u = np.append(u,np.interp(t,times,pc1))
                 v = np.append(v,np.interp(t,times,pc2))
                 ngaFlow.append(nga)
-                # Don't calculate du and dv if this is the last point or a gap is net
+                timeFlow = np.append(timeFlow,t)
+                # Don't calculate du and dv if this is the last point or a gap is next
                 if not t == max(times):
                     if not isInGap(t+100,nga,gapList):
                         du = np.append(du,np.interp(t+100,times,pc1) - np.interp(t,times,pc1))
@@ -331,6 +334,39 @@ plt.savefig("flowgrid.eps")
 plt.savefig("flowgrid.png")
 plt.close()
 print('Done with flow plot')
+
+# Repeate the gridded flow plot for all world regions
+for nga in NGAs:
+    plt.figure(figsize=(10,10))
+    plt.xlim(-7,7)
+    plt.ylim(-7,7)
+    for ii,u0 in enumerate(u0Vect):
+        for jj,v0 in enumerate(v0Vect):
+            if not np.isnan(du0Mat[ii,jj]):
+                plt.arrow(u0,v0,du0Mat[ii,jj],dv0Mat[ii,jj],width=.01,color='black',alpha=.25,zorder=0)
+
+    
+    pc1,pc2,times = dynamicsDict[nga]
+    ax = plt.gca()
+    rgbVect = cm.cool((times-min(times)) / (max(times)-min(times)))
+    for i, t in enumerate(times):
+        ax.annotate(str(i+1), (pc1[i], pc2[i]),ha='center',va='center',color=rgbVect[i])
+    legend_elements = [Patch(facecolor=rgbVect[i],label=str(i+1) + " " + str(t)) for i,t in enumerate(times)]
+    fig = plt.gcf()
+    fig.legend(handles=legend_elements)
+    indNga = [True if nga0 == nga else False for nga0 in ngaFlow]
+    uNGA = u[indNga]
+    vNGA = v[indNga]
+    duNGA = du[indNga]
+    dvNGA = dv[indNga]
+    tNGA = dv[indNga]
+
+    plt.title(nga,fontsize=10)
+    plt.xlabel("PC1")
+    plt.ylabel("PC2")
+    plt.savefig("nga_over_flow_" + nga + ".pdf")
+    plt.close()
+
 ## cv2 movie generation works poorly in Ubuntu. Do this externally
 ### Now turn those images into a movie
 #frame0 = cv2.imread(os.path.join("./img/",str(0)+".png"))
