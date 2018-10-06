@@ -110,6 +110,7 @@ plt.title("Pooled over imputations")
 plt.xlabel("Projection onto first Principle Component")
 #plt.legend()
 fileStem = "pc1_histogram_impute_pooled"
+plt.savefig(fileStem + ".pdf")
 plt.savefig(fileStem + ".png")
 plt.savefig(fileStem + ".eps")
 plt.close()
@@ -292,9 +293,9 @@ for ii,u0 in enumerate(u0Vect):
             rgb = cm.inferno(colorMat[ii,jj])
             plt.arrow(u0,v0,du0Mat[ii,jj],dv0Mat[ii,jj],width=.01,color=rgb)
 
-plt.savefig("flowgrid.pdf")
-plt.savefig("flowgrid.eps")
-plt.savefig("flowgrid.png")
+plt.savefig("gridded_mean_flow_vectors.pdf")
+plt.savefig("gridded_mean_flow_vectors.eps")
+plt.savefig("gridded_mean_flow_vectors.png")
 plt.close()
 print('Done with flow plot')
 
