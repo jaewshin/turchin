@@ -25,9 +25,9 @@ def parseDate(s):
     else:
         return float(s[0:-2])
 
-def isInGap(year0,nga0,gapList):
-    # Return True if year0 falls within a gap (inclusive of the start but exclusive of the end)
-    return any([True if (nga==nga0 and year0 >= start and year0 < end) else False for nga,start,end in gapList])
+#def isInGap(year0,nga0,gapList):
+#    # Return True if year0 falls within a gap (inclusive of the start but exclusive of the end)
+#    return any([True if (nga==nga0 and year0 >= start and year0 < end) else False for nga,start,end in gapList])
 
 # [Could be done faster by, e.g. inputing vectors u0/v0]
 def meanVector(u0,v0,r0,flowArrayInterp,minPoints=10):
@@ -51,10 +51,10 @@ def meanVector(u0,v0,r0,flowArrayInterp,minPoints=10):
 # Read csv/excel data files
 CC_file = os.path.abspath(os.path.join("./..","data","pnas_data1.csv")) #20 imputed sets
 PC1_file = os.path.abspath(os.path.join("./..","data","pnas_data2.csv")) #Turchin's PC1s
-polity_file = os.path.abspath(os.path.join("./..","data","scraped_seshat.csv")) #Info on polities spans and gaps
+#polity_file = os.path.abspath(os.path.join("./..","data","scraped_seshat.csv")) #Info on polities spans and gaps
 CC_df = pd.read_csv(CC_file) # A pandas dataframe
 PC1_df = pd.read_csv(PC1_file) # A pandas dataframe
-polity_df = pd.read_csv(polity_file) # A pandas dataframe
+#polity_df = pd.read_csv(polity_file) # A pandas dataframe
 
 # Create a dictionary that maps from World Region to Late, Intermediate, and Early NGAs
 regionDict = {"Africa":["Ghanaian Coast","Niger Inland Delta","Upper Egypt"]}
@@ -81,8 +81,8 @@ pc2_max = 7
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-# Make a list of all data gaps, with elements (NGA,gapStart,gapEnd)
-gapList = [(row["NGA"],parseDate(row["Start Period"]),parseDate(row["End Period"])) for index,row in polity_df.iterrows() if row["Polity"]=="Gap"]
+## Make a list of all data gaps, with elements (NGA,gapStart,gapEnd)
+#gapList = [(row["NGA"],parseDate(row["Start Period"]),parseDate(row["End Period"])) for index,row in polity_df.iterrows() if row["Polity"]=="Gap"]
 
 
 # Do the singular value decomposition
@@ -178,24 +178,21 @@ plt.close()
 # the complexity characteristic dataframe, CC_df [8280 x 13], and the matrix of
 # principal component projections, PC_matrix [8280 x 9]. Each row is an imputed
 # observation for 8280 / 20 = 414 unique polity configurations. CC_df provides
-# key information for each observation, such as NGA and Time. In addition,
-# information on gaps in the list gapList is used. gapList consists of entries
-# of the form (NGA,gapStart,gapEnd).
+# key information for each observation, such as NGA and Time.
 #
 # Both an un-interpolated and interpolated flow dataset are created, with
 # averaging doen across imputations. In particular, the un-iterpolated flow
 # dataset is an N x 9 x 2 array, where N is the number of observations (414), 9
 # is the number of PCs, and the final axis has two elements: (a) the PC value
 # and (b) the change in the PC value going to the next point in the NGA's time
-# sequence. The difference is set to NA if it does not exist, either due to a
-# gap or if this is the last point for the NGA. In addition, NGA name and time
-# are stored in the dataframe flowInfo (the needed "supporting" info for each
-# observation.
+# sequence. The difference is set to NA for the last point in the sequence. In
+# addition, NGA name and time are stored in the dataframe flowInfo (the needed
+# "supporting" info for each  observation.
 #
 # The dataset for the interpolated data is very similar. The only difference
-# is that the time sequences are interpolated at 100 year time intervals
-# (accounting for gaps). Thus, there are more rows in the interpolated dataset,
-# but the second and third axes are identically defined.
+# is that the time sequences are interpolated at 100 year time intervals. Thus,
+# N is greater for the interpolated dataset, but the second and third axes are
+# identically defined.
 
 # Generate the un-interpolated flow dataset
 flowArray = np.empty(shape=(0,9,2)) # Initialize the flow array 
@@ -214,12 +211,9 @@ for nga in NGAs:
             newArrayEntry[0,p,0] = np.mean(PC_matrix[ind,p])
             if i_t < len(times) - 1:
                 nextTime = times[i_t + 1]
-                if isInGap(nextTime,nga,gapList): # Is the next point in a gap?
-                    newArrayEntry[0,p,1] = np.nan
-                else:
-                    nextInd = indNga & (CC_df['Time']==nextTime) # boolean vector for slicing also by time
-                    nextVal = np.mean(PC_matrix[nextInd,p])
-                    newArrayEntry[0,p,1] = nextVal - newArrayEntry[0,p,0]
+                nextInd = indNga & (CC_df['Time']==nextTime) # boolean vector for slicing also by time
+                nextVal = np.mean(PC_matrix[nextInd,p])
+                newArrayEntry[0,p,1] = nextVal - newArrayEntry[0,p,0]
             else:
                 newArrayEntry[0,p,1] = np.nan
         flowArray = np.append(flowArray,newArrayEntry,axis=0)
@@ -231,31 +225,26 @@ interpTimes = np.arange(-9600,1901,100)
 for nga in NGAs:
     indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
     times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
-    
+
     for i_t,t in enumerate(interpTimes):
         if t >= min(times) and t <= max(times): # Is the time in the NGAs range?
-            if not isInGap(t,nga,gapList): # Is this not in a gap?
-                newInfoRow = pd.DataFrame(data={'NGA': [nga], 'Time': [t]})
-                flowInfoInterp = flowInfoInterp.append(newInfoRow,ignore_index=True)
-                newArrayEntry = np.empty(shape=(1,9,2))
-                for p in range(flowArrayInterp.shape[1]):
-                    # Interpolate using flowArray
-                    indFlow = flowInfo['NGA'] == nga
-                    tForInterp = np.array(flowInfo['Time'][indFlow],dtype='float64')
-                    pcForInterp = flowArray[indFlow,p,0]
-                    currVal = np.interp(t,tForInterp,pcForInterp)
-                    newArrayEntry[0,p,0] = currVal
-                    if i_t < len(interpTimes) - 1:
-                        nextTime = interpTimes[i_t + 1]
-                        if isInGap(nextTime,nga,gapList): # Is the next point in a gap?
-                            newArrayEntry[0,p,1] = np.nan
-                        else:
-                            nextVal = np.interp(nextTime,tForInterp,pcForInterp)
-                            newArrayEntry[0,p,1] = nextVal - currVal
-                    else:
-                        newArrayEntry[0,p,1] = np.nan
-                flowArrayInterp = np.append(flowArrayInterp,newArrayEntry,axis=0)
-
+            newInfoRow = pd.DataFrame(data={'NGA': [nga], 'Time': [t]})
+            flowInfoInterp = flowInfoInterp.append(newInfoRow,ignore_index=True)
+            newArrayEntry = np.empty(shape=(1,9,2))
+            for p in range(flowArrayInterp.shape[1]):
+                # Interpolate using flowArray
+                indFlow = flowInfo['NGA'] == nga
+                tForInterp = np.array(flowInfo['Time'][indFlow],dtype='float64')
+                pcForInterp = flowArray[indFlow,p,0]
+                currVal = np.interp(t,tForInterp,pcForInterp)
+                newArrayEntry[0,p,0] = currVal
+                if i_t < len(interpTimes) - 1:
+                    nextTime = interpTimes[i_t + 1]
+                    nextVal = np.interp(nextTime,tForInterp,pcForInterp)
+                    newArrayEntry[0,p,1] = nextVal - currVal
+                else:
+                    newArrayEntry[0,p,1] = np.nan
+            flowArrayInterp = np.append(flowArrayInterp,newArrayEntry,axis=0)
 
 #for n in range(flowArrayInterp.shape[0] - 1):
 #    plt.arrow(flowArrayInterp[n,0,0],flowArrayInterp[n,1,0],flowArrayInterp[n,0,1],flowArrayInterp[n,1,1],width=.01)
@@ -269,19 +258,6 @@ for nga in NGAs:
 #fig.legend(handles=legend_elements)
 #plt.savefig("color_legend.pdf")
 #plt.close()
-
-# First, create and store pc1,pc2, and time vectors for each NGA
-dynamicsDict = dict()
-for nga in NGAs:
-    indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
-    times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
-    pc1 = list()
-    pc2 = list()
-    for t in times:
-        ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
-        pc1.append(np.mean(PC_matrix[ind,0]))
-        pc2.append(np.mean(PC_matrix[ind,1]))
-    dynamicsDict[nga] = (pc1,pc2,times)
 
 print('Making gridded flow plot')
 print('This could be done more efficiently')
