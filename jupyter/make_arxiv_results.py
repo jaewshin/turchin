@@ -2,6 +2,7 @@ import time
 import pandas as pd 
 import numpy as np
 from matplotlib import pyplot as plt, cm as cm, mlab as mlab
+from matplotlib.patches import Patch
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns; sns.set()
 from sklearn.mixture import GaussianMixture as GMM
@@ -16,7 +17,38 @@ from sklearn import linear_model
 import cv2
 import scipy.spatial as spatial
 
-# read csv/excel data files 
+# Define some functions
+def parseDate(s):
+    # s as a date input string with the format 908BCE or 102CE
+    if s.endswith('BCE'):
+        return -float(s[0:-3])
+    else:
+        return float(s[0:-2])
+
+def isInGap(year0,nga0,gapList):
+    # Return True if year0 falls within a gap (inclusive of the start but exclusive of the end)
+    return any([True if (nga==nga0 and year0 >= start and year0 < end) else False for nga,start,end in gapList])
+
+# [Could be done faster by, e.g. inputing vectors u0/v0]
+def meanVector(u0,v0,r0,flowArrayInterp,minPoints=10):
+    # Remove endpoints
+    ind = [True if not np.isnan(flowArrayInterp[i,0,1]) else False for i in range(flowArrayInterp.shape[0])]
+    u = flowArrayInterp[ind,0,0]
+    v = flowArrayInterp[ind,1,0]
+    du = flowArrayInterp[ind,0,1]
+    dv = flowArrayInterp[ind,1,1]
+    points = np.column_stack((u,v))
+    point_tree = spatial.cKDTree(points)
+    neighb = point_tree.query_ball_point([u0,v0],r0)
+    if len(neighb) >= minPoints :
+        du0 = np.mean(du[neighb])
+        dv0 = np.mean(dv[neighb])
+        mm0 = np.sqrt(np.sum(np.power(du[neighb] - du0,2) + np.power(dv[neighb]-dv0,2))/len(neighb))
+        return [du0,dv0,mm0]
+    else:
+        return None
+
+# Read csv/excel data files
 CC_file = os.path.abspath(os.path.join("./..","data","pnas_data1.csv")) #20 imputed sets
 PC1_file = os.path.abspath(os.path.join("./..","data","pnas_data2.csv")) #Turchin's PC1s
 polity_file = os.path.abspath(os.path.join("./..","data","scraped_seshat.csv")) #Info on polities spans and gaps
@@ -24,23 +56,36 @@ CC_df = pd.read_csv(CC_file) # A pandas dataframe
 PC1_df = pd.read_csv(PC1_file) # A pandas dataframe
 polity_df = pd.read_csv(polity_file) # A pandas dataframe
 
-# Find gaps
-def parseDate(s):
-    # 908BCE
-    # 102CE
-    if s.endswith('BCE'):
-        return -float(s[0:-3])
-    else:
-        return float(s[0:-2])
+# Create a dictionary that maps from World Region to Late, Intermediate, and Early NGAs
+regionDict = {"Africa":["Ghanaian Coast","Niger Inland Delta","Upper Egypt"]}
+regionDict["Europe"] = ["Iceland","Paris Basin","Latium"]
+regionDict["Central Eurasia"] = ["Lena River Valley","Orkhon Valley","Sogdiana"]
+regionDict["Southwest Asia"] = ["Yemeni Coastal Plain","Konya Plain","Susiana"]
+regionDict["South Asia"] = ["Garo Hills","Deccan","Kachi Plain"]
+regionDict["Southeast Asia"] = ["Kapuasi Basin","Central Java","Cambodian Basin"]
+regionDict["East Asia"] = ["Southern China Hills","Kansai","Middle Yellow River Valley"]
+regionDict["North America"] = ["Finger Lakes","Cahokia","Valley of Oaxaca"]
+regionDict["South America"] = ["Lowland Andes","North Colombia","Cuzco"]
+regionDict["Oceania-Australia"] = ["Oro PNG","Chuuk Islands","Big Island Hawaii"]
 
-gapList = [(row["NGA"],parseDate(row["Start Period"]),parseDate(row["End Period"])) for index,row in polity_df.iterrows() if row["Polity"]=="Gap"]
+worldRegions = list(regionDict.keys()) # List of world regions
 
-def isInGap(year0,nga0,gapList):
-    return any([True if (nga==nga0 and year0 >= start and year0 < end) else False for nga,start,end in gapList])
+# Define some plotting parameters
+t_min = -10000
+t_max = 2000
+pc1_min = -7
+pc1_max = 7
+pc2_min = -7
+pc2_max = 7
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
+# Make a list of all data gaps, with elements (NGA,gapStart,gapEnd)
+gapList = [(row["NGA"],parseDate(row["Start Period"]),parseDate(row["End Period"])) for index,row in polity_df.iterrows() if row["Polity"]=="Gap"]
+
+
+# Do the singular value decomposition
 # Subset only the 9 CCs and convert to a numpy array 
 CC_names = ['PolPop', 'PolTerr', 'CapPop', 'levels', 'government','infrastr', 'writing', 'texts', 'money']
 CC_array = CC_df.loc[:, CC_names].values
@@ -58,49 +103,21 @@ PC_matrix = np.matmul(CC_scaled, Q.T)
 
 NGAs = CC_df.NGA.unique().tolist() # list of unique NGAs from the dataset
 
-# histogram after projecting 9-d vectors into the main principal component, for each of the 20 imputed sets
-numImpute = 20
-impute = ['V'+str(i) for i in range(1, numImpute+1)]
-
-# For illustrative plots, show only 
-# Random number seed from random.org between 1 and 1,000,000
-np.random.seed(780745)
-i = np.random.randint(numImpute)
-
-
 # histogram of PC1 for pooled imputations
 num_bins = 50
 n, bins, patches = plt.hist(PC_matrix[:,0], num_bins, density=1, facecolor='blue', alpha=0.5)
 plt.title("Pooled over imputations")
 plt.xlabel("Projection onto first Principle Component")
-plt.legend()
+#plt.legend()
 fileStem = "pc1_histogram_impute_pooled"
 plt.savefig(fileStem + ".png")
 plt.savefig(fileStem + ".eps")
 plt.close()
 
-# Create a dictionary that maps from World Region to Late, Intermediate, and Early NGAs
-regionDict = {"Africa":["Ghanaian Coast","Niger Inland Delta","Upper Egypt"]}
-regionDict["Europe"] = ["Iceland","Paris Basin","Latium"]
-regionDict["Central Eurasia"] = ["Lena River Valley","Orkhon Valley","Sogdiana"]
-regionDict["Southwest Asia"] = ["Yemeni Coastal Plain","Konya Plain","Susiana"]
-regionDict["South Asia"] = ["Garo Hills","Deccan","Kachi Plain"]
-regionDict["Southeast Asia"] = ["Kapuasi Basin","Central Java","Cambodian Basin"]
-regionDict["East Asia"] = ["Southern China Hills","Kansai","Middle Yellow River Valley"]
-regionDict["North America"] = ["Finger Lakes","Cahokia","Valley of Oaxaca"]
-regionDict["South America"] = ["Lowland Andes","North Colombia","Cuzco"]
-regionDict["Oceania-Australia"] = ["Oro PNG","Chuuk Islands","Big Island Hawaii"]
-
-worldRegions = list(regionDict.keys()) # List of world regions
-
-xmin = -10000
-xmax = 2000
-ymin = -7
-ymax = 7
-# Create a 5 x 2 plot to show time sequences organized by world region
+# Create a 5 x 2 plot to show time sequences organized by the ten world regions
 f, axes = plt.subplots(int(len(worldRegions)/2),2, sharex=True, sharey=True,figsize=(12,15))
-axes[0,0].set_xlim([xmin,xmax])
-axes[0,0].set_ylim([ymin,ymax])
+axes[0,0].set_xlim([t_min,t_max])
+axes[0,0].set_ylim([pc1_min,pc1_max])
 for i,reg in enumerate(worldRegions):
     regList = list(reversed(regionDict[reg]))
     # m,n index the subplots
@@ -139,8 +156,8 @@ startString = ['Early','Middle','Late']
 
 # Create another plot of time sequences organized by early/intermediate/late onset of political centralization
 f, axes = plt.subplots(len(allStarts),1, sharex=True, sharey=True,figsize=(4,10))
-axes[0].set_xlim([xmin,xmax])
-axes[0].set_ylim([ymin,ymax])
+axes[0].set_xlim([t_min,t_max])
+axes[0].set_ylim([pc1_min,pc1_max])
 for i,start in enumerate(allStarts):
     for nga in start:
         indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
@@ -157,77 +174,102 @@ plt.savefig("pc1_vs_time_stacked_by_start.eps")
 plt.savefig("pc1_vs_time_stacked_by_start.png")
 plt.close()
 
-# Visualize the 2D (PC1-PC2) dynamics with scatter plots and vectors normalized
-# by the time rate of change between points.
-import matplotlib.cm as cm
-#colors = cm.rainbow(np.linspace(0, 1, len(NGAs)))
-colors = cm.tab20c(np.linspace(0, 1, len(NGAs)))
-for nn,nga in enumerate(NGAs):
+# Create the data for the flow analysis. The inputs for this data creation are
+# the complexity characteristic dataframe, CC_df [8280 x 13], and the matrix of
+# principal component projections, PC_matrix [8280 x 9]. Each row is an imputed
+# observation for 8280 / 20 = 414 unique polity configurations. CC_df provides
+# key information for each observation, such as NGA and Time. In addition,
+# information on gaps in the list gapList is used. gapList consists of entries
+# of the form (NGA,gapStart,gapEnd).
+#
+# Both an un-interpolated and interpolated flow dataset are created, with
+# averaging doen across imputations. In particular, the un-iterpolated flow
+# dataset is an N x 9 x 2 array, where N is the number of observations (414), 9
+# is the number of PCs, and the final axis has two elements: (a) the PC value
+# and (b) the change in the PC value going to the next point in the NGA's time
+# sequence. The difference is set to NA if it does not exist, either due to a
+# gap or if this is the last point for the NGA. In addition, NGA name and time
+# are stored in the dataframe flowInfo (the needed "supporting" info for each
+# observation.
+#
+# The dataset for the interpolated data is very similar. The only difference
+# is that the time sequences are interpolated at 100 year time intervals
+# (accounting for gaps). Thus, there are more rows in the interpolated dataset,
+# but the second and third axes are identically defined.
+
+# Generate the un-interpolated flow dataset
+flowArray = np.empty(shape=(0,9,2)) # Initialize the flow array 
+flowInfo = pd.DataFrame(columns=['NGA','Time']) # Initialize the info dataframe
+
+# Iterate over NGAs to populate flowArray and flowInfo
+for nga in NGAs:
     indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
     times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
-    pc1 = list()
-    pc2 = list()
-    for t in times:
+    for i_t,t in enumerate(times):
         ind = indNga & (CC_df['Time']==t) # boolean vector for slicing also by time
-        pc1.append(np.mean(PC_matrix[ind,0]))
-        pc2.append(np.mean(PC_matrix[ind,1]))
-    dpc1 = np.diff(pc1)        
-    dpc2 = np.diff(pc2)        
-    dt = np.diff(times)
-    dpcMag = np.sqrt(np.power(dpc1,2) + np.power(dpc2,2))
-    flowMag = dpcMag / dt
-    maxFlow = np.max(flowMag)
-    for p in range(len(flowMag)):
-        u = dpc1[p]
-        v = dpc2[p]
-        d = np.sqrt(u*u + v*v)
-        u = flowMag[p] * u / d / maxFlow
-        v = flowMag[p] * v / d / maxFlow
-        plt.arrow(pc1[p],pc2[p],u,v,color=colors[nn],width=.01)
-        
-    #plt.plot(pc1,pc2)
-    #plt.scatter(pc1,pc2,s=10)
+        newInfoRow = pd.DataFrame(data={'NGA': [nga], 'Time': [t]})
+        flowInfo = flowInfo.append(newInfoRow,ignore_index=True)
+        newArrayEntry = np.empty(shape=(1,9,2))
+        for p in range(flowArray.shape[1]):
+            newArrayEntry[0,p,0] = np.mean(PC_matrix[ind,p])
+            if i_t < len(times) - 1:
+                nextTime = times[i_t + 1]
+                if isInGap(nextTime,nga,gapList): # Is the next point in a gap?
+                    newArrayEntry[0,p,1] = np.nan
+                else:
+                    nextInd = indNga & (CC_df['Time']==nextTime) # boolean vector for slicing also by time
+                    nextVal = np.mean(PC_matrix[nextInd,p])
+                    newArrayEntry[0,p,1] = nextVal - newArrayEntry[0,p,0]
+            else:
+                newArrayEntry[0,p,1] = np.nan
+        flowArray = np.append(flowArray,newArrayEntry,axis=0)
 
-from matplotlib.patches import Patch
-legend_elements = [Patch(facecolor=colors[nn],label=NGAs[nn]) for nn in range(len(NGAs))]
+# Iterate over NGAs to populate flowArrayInterp and flowInfoInterp
+flowArrayInterp = np.empty(shape=(0,9,2)) # Initialize the flow array 
+flowInfoInterp = pd.DataFrame(columns=['NGA','Time']) # Initialize the info dataframe
+interpTimes = np.arange(-9600,1901,100)
+for nga in NGAs:
+    indNga = CC_df["NGA"] == nga # boolean vector for slicing by NGA
+    times = sorted(np.unique(CC_df.loc[indNga,'Time'])) # Vector of unique times
+    
+    for i_t,t in enumerate(interpTimes):
+        if t >= min(times) and t <= max(times): # Is the time in the NGAs range?
+            if not isInGap(t,nga,gapList): # Is this not in a gap?
+                newInfoRow = pd.DataFrame(data={'NGA': [nga], 'Time': [t]})
+                flowInfoInterp = flowInfoInterp.append(newInfoRow,ignore_index=True)
+                newArrayEntry = np.empty(shape=(1,9,2))
+                for p in range(flowArrayInterp.shape[1]):
+                    # Interpolate using flowArray
+                    indFlow = flowInfo['NGA'] == nga
+                    tForInterp = np.array(flowInfo['Time'][indFlow],dtype='float64')
+                    pcForInterp = flowArray[indFlow,p,0]
+                    currVal = np.interp(t,tForInterp,pcForInterp)
+                    newArrayEntry[0,p,0] = currVal
+                    if i_t < len(interpTimes) - 1:
+                        nextTime = interpTimes[i_t + 1]
+                        if isInGap(nextTime,nga,gapList): # Is the next point in a gap?
+                            newArrayEntry[0,p,1] = np.nan
+                        else:
+                            nextVal = np.interp(nextTime,tForInterp,pcForInterp)
+                            newArrayEntry[0,p,1] = nextVal - currVal
+                    else:
+                        newArrayEntry[0,p,1] = np.nan
+                flowArrayInterp = np.append(flowArrayInterp,newArrayEntry,axis=0)
 
-plt.xlim(-7,7)
-plt.ylim(-7,7)
 
+#for n in range(flowArrayInterp.shape[0] - 1):
+#    plt.arrow(flowArrayInterp[n,0,0],flowArrayInterp[n,1,0],flowArrayInterp[n,0,1],flowArrayInterp[n,1,1],width=.01)
+#plt.xlim(pc1_min,pc1_max)
+#plt.ylim(pc2_min,pc2_max)
+#plt.show()
 
-plt.savefig("flow_visualization.pdf")
-plt.savefig("flow_visualization.eps")
-plt.savefig("flow_visualization.png")
-plt.close()
+#legend_elements = [Patch(facecolor=colors[nn],label=NGAs[nn]) for nn in range(len(NGAs))]
 
+#fig = plt.figure(figsize=(3,7))
+#fig.legend(handles=legend_elements)
+#plt.savefig("color_legend.pdf")
+#plt.close()
 
-fig = plt.figure(figsize=(3,7))
-fig.legend(handles=legend_elements)
-plt.savefig("color_legend.pdf")
-plt.close()
-
-
-# Extract the movement vectors at 100 year intervals, accounting for possible
-# gaps. Linear interpolation is done between observations. In particular, the
-# following vectors are created:
-#
-# u         Origin of vector along PC1
-# v         Origin of vector along PC2
-# du        Change along PC1
-# dv        Change along PC2
-# ngaFlow   NGA of the point
-# timeFlow  Time of the point
-u = np.empty(shape=(0,1))
-v = np.empty(shape=(0,1))
-du = np.empty(shape=(0,1))
-dv = np.empty(shape=(0,1))
-ngaFlow = list()
-timeFlow = np.empty(shape=(0,1))
-
-timesFlow = np.arange(-9600,1901,100) # Times at which to evaluate flow vectors
-# Create 
-# Visualize the 2D (PC1-PC2) dynamics with a movie
-movieTimes = np.arange(-9600,1901,100)
 # First, create and store pc1,pc2, and time vectors for each NGA
 dynamicsDict = dict()
 for nga in NGAs:
@@ -241,60 +283,6 @@ for nga in NGAs:
         pc2.append(np.mean(PC_matrix[ind,1]))
     dynamicsDict[nga] = (pc1,pc2,times)
 
-# Next, iterate over NGAs and times to make the movement vectors
-for nn,nga in enumerate(NGAs):
-    pc1,pc2,times = dynamicsDict[nga]
-    for i,t in enumerate(timesFlow):
-        if t >= min(times) and t <= max(times): # Is the time in the NGAs range?
-            if not isInGap(t,nga,gapList): # Is this in a gap?
-                u = np.append(u,np.interp(t,times,pc1))
-                v = np.append(v,np.interp(t,times,pc2))
-                ngaFlow.append(nga)
-                timeFlow = np.append(timeFlow,t)
-                # Don't calculate du and dv if this is the last point or a gap is next
-                if not t == max(times):
-                    if not isInGap(t+100,nga,gapList):
-                        du = np.append(du,np.interp(t+100,times,pc1) - np.interp(t,times,pc1))
-                        dv = np.append(dv,np.interp(t+100,times,pc2) - np.interp(t,times,pc2))
-                    else:
-                        du = np.append(du,np.nan)
-                        dv = np.append(dv,np.nan)
-                else:
-                    du = np.append(du,np.nan)
-                    dv = np.append(dv,np.nan)
-
-plt.figure(figsize=(10,10))
-plt.xlim(-7,7)
-plt.ylim(-7,7)
-for i in range(len(u)):
-    if not np.isnan(du[i]):
-        nn = [ind for ind,nga in enumerate(NGAs) if nga==ngaFlow[i]][0] 
-        plt.arrow(u[i],v[i],du[i],dv[i],width=.01,color=colors[nn])
-
-plt.savefig("flow2.pdf")
-plt.savefig("flow2.eps")
-plt.savefig("flow2.png")
-plt.close()
-
-# [Could be done faster by, e.g. inputing vectors u0/v0]
-def meanVector(u0,v0,r0,u,v,du,dv,minPoints=10):
-    # Remove endpoints
-    ind = [True if not np.isnan(du[i]) else False for i in range(len(du))]
-    u = u[ind]
-    v = v[ind]
-    du = du[ind]
-    dv = dv[ind]
-    points = np.column_stack((u,v))
-    point_tree = spatial.cKDTree(points)
-    neighb = point_tree.query_ball_point([u0,v0],r0)
-    if len(neighb) >= minPoints :
-        du0 = np.mean(du[neighb])
-        dv0 = np.mean(dv[neighb])
-        mm0 = np.sqrt(np.sum(np.power(du[neighb] - du0,2) + np.power(dv[neighb]-dv0,2))/len(neighb))
-        return [du0,dv0,mm0]
-    else:
-        return None
-
 print('Making gridded flow plot')
 print('This could be done more efficiently')
 r0 = .75
@@ -307,7 +295,7 @@ mm0Mat = np.empty(shape=(len(u0Vect),len(v0Vect)))
 
 for ii,u0 in enumerate(u0Vect):
     for jj,v0 in enumerate(v0Vect):
-        meanCalc = meanVector(u0,v0,r0,u,v,du,dv) # [du0, dv0, mm0]
+        meanCalc = meanVector(u0,v0,r0,flowArrayInterp) # [du0, dv0, mm0]
         if meanCalc is not None:
             du0Mat[ii,jj] = meanCalc[0]
             dv0Mat[ii,jj] = meanCalc[1]
@@ -328,14 +316,13 @@ for ii,u0 in enumerate(u0Vect):
             rgb = cm.inferno(colorMat[ii,jj])
             plt.arrow(u0,v0,du0Mat[ii,jj],dv0Mat[ii,jj],width=.01,color=rgb)
 
-
 plt.savefig("flowgrid.pdf")
 plt.savefig("flowgrid.eps")
 plt.savefig("flowgrid.png")
 plt.close()
 print('Done with flow plot')
 
-# Repeate the gridded flow plot for all world regions
+# Repeat the gridded flow plot for all world regions
 for nga in NGAs:
     plt.figure(figsize=(10,10))
     plt.xlim(-7,7)
@@ -346,20 +333,19 @@ for nga in NGAs:
                 plt.arrow(u0,v0,du0Mat[ii,jj],dv0Mat[ii,jj],width=.01,color='black',alpha=.25,zorder=0)
 
     
-    pc1,pc2,times = dynamicsDict[nga]
+    indNga = [True if nga0 == nga else False for nga0 in flowInfo["NGA"]]
+    uNGA = flowArray[indNga,0,0]
+    vNGA = flowArray[indNga,1,0]
+    #duNGA = flowArray[indNga,0,1]
+    #dvNGA = flowArray[indNga,1,1]
+    tNGA = np.array(flowInfo['Time'][indNga],dtype='float64')
     ax = plt.gca()
-    rgbVect = cm.cool((times-min(times)) / (max(times)-min(times)))
-    for i, t in enumerate(times):
-        ax.annotate(str(i+1), (pc1[i], pc2[i]),ha='center',va='center',color=rgbVect[i])
-    legend_elements = [Patch(facecolor=rgbVect[i],label=str(i+1) + " " + str(t)) for i,t in enumerate(times)]
+    rgbVect = cm.cool((tNGA-min(tNGA)) / (max(tNGA)-min(tNGA)))
+    for i, t in enumerate(tNGA):
+        ax.annotate(str(i+1), (uNGA[i], vNGA[i]),ha='center',va='center',color=rgbVect[i])
+    legend_elements = [Patch(facecolor=rgbVect[i],label=str(i+1) + " " + str(t)) for i,t in enumerate(tNGA)]
     fig = plt.gcf()
     fig.legend(handles=legend_elements)
-    indNga = [True if nga0 == nga else False for nga0 in ngaFlow]
-    uNGA = u[indNga]
-    vNGA = v[indNga]
-    duNGA = du[indNga]
-    dvNGA = dv[indNga]
-    tNGA = dv[indNga]
 
     plt.title(nga,fontsize=10)
     plt.xlabel("PC1")
